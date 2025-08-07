@@ -19,6 +19,7 @@ To create a user-friendly desktop tool that batch-converts images from a selecte
 The application window will be designed for simplicity and clarity, guiding the user through the conversion process step-by-step.
 
 - **Layout**: A single, non-resizable window organized vertically.
+  - **Title Bar**: Displays the application name and version number (e.g., "SHH Image to WebP Converter v1.0").
   - **Source Selection**: A label, a non-editable text box for the path, and a `Browse...` button.
   - **Destination Selection**: A label, a non-editable text box for the path, and a `Browse...` button.
   - **Quality Setting**: A label and a horizontal slider (defaulting to 85).

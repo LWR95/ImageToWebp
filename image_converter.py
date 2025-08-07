@@ -7,7 +7,8 @@ import os
 class ImageConverterApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("SHH Image to WebP Converter")
+        self.version = "1.0"
+        self.root.title(f"SHH Image to WebP Converter v{self.version}")
         self.root.geometry("500x300")
         self.root.resizable(False, False)
 

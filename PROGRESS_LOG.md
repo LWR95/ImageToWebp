@@ -7,32 +7,38 @@ This file tracks the development progress of the image conversion utility.
 - [X] Brainstormed core features and user interaction flow.
 - [X] Defined image processing logic (resize, pad, convert).
 - [X] Selected technology stack (Python, Tkinter, Pillow).
+- [X] Added UI/UX considerations and robustness planning.
 - [X] Created `PROJECT_PLAN.md` to document the project scope.
 - [X] Created this `PROGRESS_LOG.md` file.
 
-## ⬜️ Stage 2: Setup and Dependencies
+## ✅ Stage 2: Setup and Dependencies (August 7, 2025)
 
-- [ ] Install the `Pillow` library.
-- [ ] Create the main application file (`image_converter.py`).
-- [ ] Set up the basic GUI window structure.
+- [X] Installed the `Pillow` and `PyInstaller` libraries.
+- [X] Created `requirements.txt` to manage dependencies.
+- [X] Created the main application file (`image_converter.py`).
+- [X] Set up the basic GUI window structure.
 
-## ⬜️ Stage 3: Core Feature Implementation
+## ✅ Stage 3: Core Feature Implementation (August 7, 2025)
 
-- [ ] Implement source folder selection logic.
-- [ ] Implement destination folder selection logic.
-- [ ] Add the quality control slider to the GUI.
-- [X] Implement the image processing and conversion logic.
-- [X] Add logic to handle transparent images by flattening them onto a white background.
-- [X] Connect the "Convert" button to the processing logic.
+- [X] Implemented source folder selection logic.
+- [X] Implemented destination folder selection logic.
+- [X] Added the quality control slider to the GUI.
+- [X] Implemented the image processing and conversion logic.
+- [X] Added logic to handle transparent images by flattening them onto a white background.
+- [X] Implemented threading for a responsive UI.
+- [X] Connected the "Convert" button to the processing logic.
 
-## ⬜️ Stage 4: Testing and Refinement
+## ✅ Stage 4: Testing and Refinement (August 7, 2025)
 
-- [ ] Test the application with various image types (PNG, JPG, etc.).
-- [ ] Test with different folder structures.
-- [ ] Ensure the quality slider works as expected.
-- [ ] Refine the user interface and add status messages (e.g., "Conversion complete").
+- [X] Tested the application with various image types (PNG, JPG).
+- [X] Tested with different folder structures.
+- [X] Ensured the quality slider works as expected.
+- [X] Refined the user interface and added status messages.
+- [X] Added version number to the title bar.
 
-## ⬜️ Stage 5: Finalization
+## ✅ Stage 5: Finalization and Deployment (August 7, 2025)
 
-- [ ] Add comments and clean up the code.
-- [ ] Create a `README.md` with instructions on how to run the tool.
+- [X] Added comments and cleaned up the code.
+- [X] Created a `README.md` with instructions on how to run the tool.
+- [X] Packaged the application into a standalone executable (`SHH_Image_Converter.exe`).
+- [X] Initialized a Git repository and pushed the project to GitHub.
