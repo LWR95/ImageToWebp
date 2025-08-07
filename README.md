@@ -4,7 +4,7 @@ A simple desktop utility to batch-convert images to the WebP format, with option
 
 ## Features (Version 3.0)
 
-- **Live Preview**: See a real-time preview of your conversion settings on the "Preview" tab before processing any images.
+- **Responsive Live Preview**: See a real-time preview of your conversion settings. The preview images automatically scale to fit the viewing area, preventing overflow.
 - **Theme Selection**: Choose from a variety of light and dark themes in the "Settings" tab to customize the application's appearance.
 - **Drag and Drop**: Easily select your source folder by dragging it directly onto the application window.
 - **Multi-Format Conversion**: Convert images to WebP, JPEG, or PNG.

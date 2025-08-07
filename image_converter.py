@@ -232,58 +232,85 @@ class ImageConverterApp:
         if not source or not os.path.isdir(source):
             self.preview_before_label.config(image='', text="No image selected")
             self.preview_after_label.config(image='', text="Settings will be applied here")
+            self.preview_before_label.image = None
+            self.preview_after_label.image = None
             return
 
         image_files = [f for f in os.listdir(source) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.tiff'))]
         if not image_files:
             self.preview_before_label.config(image='', text="No images found in folder")
             self.preview_after_label.config(image='', text="Settings will be applied here")
+            self.preview_before_label.image = None
+            self.preview_after_label.image = None
             return
 
         first_image_path = os.path.join(source, image_files[0])
         
         try:
-            # Before Preview
-            img_before = Image.open(first_image_path)
-            img_before.thumbnail((250, 250))
-            self.photo_before = ImageTk.PhotoImage(img_before)
+            # We need to update the UI to get correct widget sizes
+            self.root.update_idletasks()
+            original_image = Image.open(first_image_path)
+
+            # --- Before Preview ---
+            pad = 10 # Small padding
+            w_before = self.preview_before_label.winfo_width() - pad
+            h_before = self.preview_before_label.winfo_height() - pad
+            
+            if w_before < pad or h_before < pad: # Fallback if widget size isn't available
+                w_before, h_before = 250, 250
+
+            img_before_thumb = original_image.copy()
+            img_before_thumb.thumbnail((w_before, h_before))
+            self.photo_before = ImageTk.PhotoImage(img_before_thumb)
             self.preview_before_label.config(image=self.photo_before, text="")
             self.preview_before_label.image = self.photo_before
 
-            # After Preview
-            width = self.output_width.get()
-            height = self.output_height.get()
+            # --- After Preview ---
+            output_width = self.output_width.get()
+            output_height = self.output_height.get()
             output_format = self.output_format.get()
 
-            img_after = img_before.copy()
+            # Create the image as it would be after conversion settings are applied
+            img_after_base = original_image.copy()
             
-            # Handle transparency correctly
-            if output_format != "PNG" and (img_after.mode in ('RGBA', 'LA') or (img_after.mode == 'P' and 'transparency' in img_after.info)):
-                background_flatten = Image.new("RGB", img_after.size, (255, 255, 255))
-                img_rgba = img_after.convert("RGBA")
+            # Handle transparency correctly for the conversion process
+            if output_format != "PNG" and (img_after_base.mode in ('RGBA', 'LA') or (img_after_base.mode == 'P' and 'transparency' in img_after_base.info)):
+                background_flatten = Image.new("RGB", img_after_base.size, (255, 255, 255))
+                img_rgba = img_after_base.convert("RGBA")
                 background_flatten.paste(img_rgba, mask=img_rgba)
-                img_after = background_flatten
-            elif img_after.mode not in ("RGB", "RGBA"):
-                img_after = img_after.convert("RGB")
+                img_after_base = background_flatten
+            elif img_after_base.mode not in ("RGB", "RGBA"):
+                img_after_base = img_after_base.convert("RGB")
 
-            img_after.thumbnail((width, height))
+            img_after_base.thumbnail((output_width, output_height))
             
-            # Create a new background for pasting the thumbnail
-            final_background = Image.new('RGBA', (width, height), (255, 255, 255, 0))
-            paste_x = (width - img_after.width) // 2
-            paste_y = (height - img_after.height) // 2
-            final_background.paste(img_after, (paste_x, paste_y))
+            # Create a new background for pasting the thumbnail (letterboxing)
+            final_processed_image = Image.new('RGBA', (output_width, output_height), (255, 255, 255, 0))
+            paste_x = (output_width - img_after_base.width) // 2
+            paste_y = (output_height - img_after_base.height) // 2
+            final_processed_image.paste(img_after_base, (paste_x, paste_y))
 
             if output_format != "PNG":
-                final_background = final_background.convert("RGB")
+                final_processed_image = final_processed_image.convert("RGB")
 
-            self.photo_after = ImageTk.PhotoImage(final_background)
+            # Now, create a thumbnail of this final processed image for the preview display
+            w_after = self.preview_after_label.winfo_width() - pad
+            h_after = self.preview_after_label.winfo_height() - pad
+            if w_after < pad or h_after < pad: # Fallback
+                w_after, h_after = 250, 250
+
+            display_thumb = final_processed_image.copy()
+            display_thumb.thumbnail((w_after, h_after))
+
+            self.photo_after = ImageTk.PhotoImage(display_thumb)
             self.preview_after_label.config(image=self.photo_after, text="")
             self.preview_after_label.image = self.photo_after
 
         except Exception as e:
             self.preview_before_label.config(image='', text="Error loading image")
             self.preview_after_label.config(image='', text="Preview Error")
+            self.preview_before_label.image = None
+            self.preview_after_label.image = None
             print(f"Preview Error: {e}")
 
     def start_conversion_thread(self):
