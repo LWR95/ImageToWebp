@@ -13,6 +13,7 @@ A simple desktop utility to batch-convert images to the WebP format, with option
 - **Settings Persistence**: Your chosen dimensions, format, quality, and theme are saved in a `config.json` file and loaded automatically on startup.
 - **Batch Processing**: Convert all images in a selected folder at once.
 - **Intelligent Transparency**: Preserves transparency when converting to PNG and flattens it onto a white background for other formats.
+- **AI-Powered Background Removal**: For PNG outputs, you can choose to automatically remove the image background using a sophisticated AI model.
 - **Standalone Executable**: Packaged as a single `.exe` file that runs on Windows without needing Python or any other dependencies.
 
 ## How to Use
@@ -30,6 +31,7 @@ A simple desktop utility to batch-convert images to the WebP format, with option
     - **Preview**: Click the **Preview** tab to see a live preview of the first image with the current settings applied.
     - **Settings Tab**:
         - Set your desired **Output Width**, **Output Height**, and **Output Format**.
+        - If you select **PNG** as the output, you can also check the **Remove Background** option.
         - Choose a new **Theme** for the application.
         - Click **Save Settings** to make them the new default.
 6.  **Convert**:

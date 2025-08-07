@@ -108,3 +108,27 @@ This section outlines the planned UI/UX enhancements for Version 3.0.
 
 - **`ttkthemes`**: This library will be added to manage the light/dark theme switching.
 - **`tkinterdnd2`**: This library will be integrated to enable drag-and-drop functionality.
+
+---
+
+## Version 4.0 - Planned Features
+
+This section outlines the planned features for Version 4.0, focusing on advanced image processing capabilities.
+
+### New Core Features
+
+- **AI-Powered Background Removal**: A new feature will be added to the "Settings" tab, allowing users to automatically remove the background from images.
+  - This option will be available only when "PNG" is selected as the output format to support transparency.
+  - The application will use the `rembg` library to perform the background removal.
+  - The PyInstaller build script will be updated to include the necessary `rembg` AI models, ensuring the feature works in the standalone executable.
+
+### Updated Image Processing Logic
+
+- The image processing workflow will be updated to include an optional background removal step, based on user selection in the settings.
+- When enabled, the tool will apply the `rembg` background removal before proceeding with the existing resize, pad, and convert steps.
+
+### Implementation Considerations
+
+- **UI Responsiveness**: The AI background removal can be slow. To prevent the UI from freezing, the "After" preview will display a "Processing..." message while the `rembg` model is running.
+- **Model Distribution**: The `rembg` library requires a large model file (~176 MB). This model must be downloaded on the development machine before building the application. Bundling this model will significantly increase the final `.exe` size, which is a necessary trade-off for the feature to work offline.
+- **Robust Error Handling**: The image processing logic will include specific `try...except` blocks to catch potential errors from the `rembg` library, allowing the application to skip problematic images without crashing the entire batch conversion.
