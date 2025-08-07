@@ -66,3 +66,28 @@ To ensure a smooth and reliable user experience, the following measures will be 
 ## 8. Deployment
 
 After the script has been thoroughly tested and finalized, it will be packaged into a standalone executable (`.exe`) using PyInstaller. A `requirements.txt` file will be used to ensure a consistent and repeatable build process. This will allow the tool to be run on other Windows machines without requiring a Python installation.
+
+---
+
+## Version 2.0 - Planned Features
+
+This section outlines the planned enhancements for Version 2.0 of the application.
+
+### New Core Features
+
+- **Settings Tab**: A new tab will be added to the interface to house advanced configuration options.
+- **Customizable Output Dimensions**: Users will be able to specify the exact width and height of the output image.
+- **Selectable Output Format**: Users will be able to choose the output format from a dropdown menu (WebP, JPEG, PNG).
+- **Persistent Settings**: The application will save the user's settings (dimensions, format, quality) so they are remembered on the next launch.
+
+### Updated UI and User Experience
+
+- **Tabbed Interface**: The main window will be reorganized into two tabs:
+  - **Converter**: Contains the primary workflow (source/destination selection, convert button).
+  - **Settings**: Contains the new configuration options.
+- **Dynamic Quality Slider**: The quality slider will be disabled when the "PNG" format is selected, as it is a lossless format.
+
+### Updated Image Processing Logic
+
+- The image processing engine will be updated to use the custom width, height, and format specified in the settings.
+- The "Pad to Fit" logic will correctly resize and pad images to fit within any user-defined rectangular dimensions.

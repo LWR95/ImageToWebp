@@ -2,13 +2,14 @@
 
 A simple desktop utility to batch-convert images to the WebP format, with options for resizing and quality control.
 
-## Features
+## Features (Version 2.0)
 
-- **Batch Conversion**: Convert all images in a selected folder at once.
-- **User-Friendly GUI**: A simple graphical interface for easy operation.
-- **Resize and Pad**: Automatically resizes images to fit within a 500x500 pixel box and pads them with a white background to maintain a square aspect ratio.
-- **Transparency Handling**: Correctly handles transparent PNGs by flattening them onto a white background.
-- **Quality Control**: Adjust the WebP quality from 1 to 100 to balance file size and image fidelity.
+- **Multi-Format Conversion**: Convert images to WebP, JPEG, or PNG.
+- **Custom Dimensions**: Set custom output width and height for the converted images.
+- **Adjustable Quality**: Control the quality setting for WebP and JPEG formats.
+- **Settings Persistence**: Your chosen dimensions, format, and quality are saved in a `config.json` file and loaded automatically on startup.
+- **Batch Processing**: Convert all images in a selected folder at once.
+- **Intelligent Transparency**: Preserves transparency when converting to PNG and flattens it onto a white background for other formats.
 - **Standalone Executable**: Packaged as a single `.exe` file that runs on Windows without needing Python or any other dependencies.
 
 ## How to Use
@@ -17,11 +18,17 @@ A simple desktop utility to batch-convert images to the WebP format, with option
 
 1.  Navigate to the `dist/` folder.
 2.  Double-click `SHH_Image_Converter.exe` to run the application.
-3.  Click the first **Browse...** button to select the folder containing your source images.
-4.  Click the second **Browse...** button to select the folder where you want to save the converted WebP files.
-5.  Adjust the **WebP Quality** slider to your desired level.
-6.  Click the **Convert Images** button to start the process.
-7.  A confirmation message will appear when the conversion is complete.
+3.  **(Optional) Configure Settings**:
+    - Click on the **Settings** tab.
+    - Set your desired **Output Width**, **Output Height**, and **Output Format**.
+    - Click **Save Settings** to make them the new default.
+4.  **Convert Images**:
+    - Click on the **Converter** tab.
+    - Click the first **Browse...** button to select the folder containing your source images.
+    - Click the second **Browse...** button to select the destination folder.
+    - If applicable, adjust the **Quality** slider.
+    - Click the **Convert Images** button.
+5.  A confirmation message will appear when the conversion is complete.
 
 ### Running from Source
 
