@@ -1,6 +1,7 @@
 {
-    "output_width": 500,
+    "output_width": 1000,
     "output_height": 250,
-    "output_format": "PNG",
-    "quality": 85
+    "output_format": "WebP",
+    "quality": 85,
+    "theme": "elegance"
 }

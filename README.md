@@ -2,12 +2,15 @@
 
 A simple desktop utility to batch-convert images to the WebP format, with options for resizing and quality control.
 
-## Features (Version 2.0)
+## Features (Version 3.0)
 
+- **Live Preview**: See a real-time preview of your conversion settings on the "Preview" tab before processing any images.
+- **Theme Selection**: Choose from a variety of light and dark themes in the "Settings" tab to customize the application's appearance.
+- **Drag and Drop**: Easily select your source folder by dragging it directly onto the application window.
 - **Multi-Format Conversion**: Convert images to WebP, JPEG, or PNG.
 - **Custom Dimensions**: Set custom output width and height for the converted images.
 - **Adjustable Quality**: Control the quality setting for WebP and JPEG formats.
-- **Settings Persistence**: Your chosen dimensions, format, and quality are saved in a `config.json` file and loaded automatically on startup.
+- **Settings Persistence**: Your chosen dimensions, format, quality, and theme are saved in a `config.json` file and loaded automatically on startup.
 - **Batch Processing**: Convert all images in a selected folder at once.
 - **Intelligent Transparency**: Preserves transparency when converting to PNG and flattens it onto a white background for other formats.
 - **Standalone Executable**: Packaged as a single `.exe` file that runs on Windows without needing Python or any other dependencies.
@@ -17,18 +20,22 @@ A simple desktop utility to batch-convert images to the WebP format, with option
 ### Using the Executable
 
 1.  Navigate to the `dist/` folder.
-2.  Double-click `SHH_Image_Converter.exe` to run the application.
-3.  **(Optional) Configure Settings**:
-    - Click on the **Settings** tab.
-    - Set your desired **Output Width**, **Output Height**, and **Output Format**.
-    - Click **Save Settings** to make them the new default.
-4.  **Convert Images**:
-    - Click on the **Converter** tab.
-    - Click the first **Browse...** button to select the folder containing your source images.
-    - Click the second **Browse...** button to select the destination folder.
-    - If applicable, adjust the **Quality** slider.
+2.  Double-click `SHH_Image_Converter_v3.exe` (or the latest version) to run the application.
+3.  **Select Source**:
+    - **Drag and Drop**: Drag the folder containing your source images directly onto the main window.
+    - **Browse**: Alternatively, click the **Browse...** button to select the folder.
+4.  **Select Destination**:
+    - Click the second **Browse...** button to select the destination folder for the converted images.
+5.  **(Optional) Adjust Settings**:
+    - **Preview**: Click the **Preview** tab to see a live preview of the first image with the current settings applied.
+    - **Settings Tab**:
+        - Set your desired **Output Width**, **Output Height**, and **Output Format**.
+        - Choose a new **Theme** for the application.
+        - Click **Save Settings** to make them the new default.
+6.  **Convert**:
+    - On the **Converter** tab, adjust the **Quality** slider if needed.
     - Click the **Convert Images** button.
-5.  A confirmation message will appear when the conversion is complete.
+7.  A confirmation message will appear when the conversion is complete.
 
 ### Running from Source
 

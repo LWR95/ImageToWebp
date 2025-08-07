@@ -91,3 +91,20 @@ This section outlines the planned enhancements for Version 2.0 of the applicatio
 
 - The image processing engine will be updated to use the custom width, height, and format specified in the settings.
 - The "Pad to Fit" logic will correctly resize and pad images to fit within any user-defined rectangular dimensions.
+
+---
+
+## Version 3.0 - Planned Features
+
+This section outlines the planned UI/UX enhancements for Version 3.0.
+
+### New UI/UX Features
+
+- **Theme Selection**: A new option in the "Settings" tab will allow users to switch between a light and dark mode for the application interface. The chosen theme will be saved and loaded between sessions.
+- **Drag and Drop**: Users will be able to drag a folder from their file explorer and drop it onto the application window to set the source directory, providing a faster workflow.
+- **Live Preview**: A new "Preview" tab will be added. It will show a "before" and "after" thumbnail of the first image in the source folder, which will update in real-time as the user adjusts settings like dimensions and format.
+
+### Updated Technology Stack
+
+- **`ttkthemes`**: This library will be added to manage the light/dark theme switching.
+- **`tkinterdnd2`**: This library will be integrated to enable drag-and-drop functionality.
