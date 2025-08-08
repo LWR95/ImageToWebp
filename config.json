@@ -1,7 +1,7 @@
 {
     "output_width": 500,
     "output_height": 800,
-    "output_format": "WebP",
+    "output_format": "PNG",
     "quality": 85,
     "theme": "arc",
     "remove_background": false

@@ -494,7 +494,19 @@ class ImageConverterApp:
             self.convert_button.config(state="normal")
 
 
-if __name__ == "__main__":
+def launch_main_application():
+    """Launch the main image converter application"""
     root = TkinterDnD.Tk()
     app = ImageConverterApp(root)
     root.mainloop()
+
+if __name__ == "__main__":
+    # Import loading screen
+    try:
+        from loading_screen import show_loading_screen
+        # Show loading screen first, then launch main app
+        show_loading_screen(launch_main_application)
+    except ImportError:
+        # Fallback if loading screen not available
+        print("Loading screen not found, launching directly...")
+        launch_main_application()
