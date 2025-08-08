@@ -1,20 +1,20 @@
 # SHH Image to WebP Converter
 
-A simple desktop utility to batch-convert images to the WebP format, with options for resizing and quality control.
+A powerful desktop utility for batch image conversion with AI-powered background removal, supporting WebP, JPEG, and PNG formats with intelligent quality control and live preview.
 
-## Features (Version 3.0)
+## Features (Version 3.0 with AI Background Removal)
 
-- **Responsive Live Preview**: See a real-time preview of your conversion settings. The preview images automatically scale to fit the viewing area, preventing overflow.
-- **Theme Selection**: Choose from a variety of light and dark themes in the "Settings" tab to customize the application's appearance.
-- **Drag and Drop**: Easily select your source folder by dragging it directly onto the application window.
-- **Multi-Format Conversion**: Convert images to WebP, JPEG, or PNG.
-- **Custom Dimensions**: Set custom output width and height for the converted images.
-- **Adjustable Quality**: Control the quality setting for WebP and JPEG formats.
-- **Settings Persistence**: Your chosen dimensions, format, quality, and theme are saved in a `config.json` file and loaded automatically on startup.
-- **Batch Processing**: Convert all images in a selected folder at once.
-- **Intelligent Transparency**: Preserves transparency when converting to PNG and flattens it onto a white background for other formats.
-- **AI-Powered Background Removal**: For PNG outputs, you can choose to automatically remove the image background using a sophisticated AI model.
-- **Standalone Executable**: Packaged as a single `.exe` file that runs on Windows without needing Python or any other dependencies.
+- **🤖 AI-Powered Background Removal**: Automatically remove backgrounds from images using advanced U²-Net deep learning models, producing transparent PNG outputs perfect for compositing and design work.
+- **🖼️ Responsive Live Preview**: See real-time previews of your conversion settings, including background removal effects. Preview images automatically scale to fit the viewing area.
+- **🎨 Theme Selection**: Choose from a variety of light and dark themes in the "Settings" tab to customize the application's appearance.
+- **📁 Drag and Drop**: Easily select your source folder by dragging it directly onto the application window.
+- **🔄 Multi-Format Conversion**: Convert images to WebP, JPEG, or PNG with intelligent format handling.
+- **📏 Custom Dimensions**: Set custom output width and height for converted images with letterboxing support.
+- **⚙️ Adjustable Quality**: Control quality settings for WebP and JPEG formats (1-100 scale).
+- **💾 Settings Persistence**: Your chosen dimensions, format, quality, theme, and background removal preferences are saved automatically.
+- **⚡ Batch Processing**: Convert all images in a selected folder at once with progress tracking.
+- **🔍 Intelligent Transparency**: Preserves transparency for PNG outputs and flattens to white background for other formats.
+- **📦 Standalone Executable**: Packaged as a single `.exe` file that runs on Windows without dependencies.
 
 ## How to Use
 
@@ -28,16 +28,16 @@ A simple desktop utility to batch-convert images to the WebP format, with option
 4.  **Select Destination**:
     - Click the second **Browse...** button to select the destination folder for the converted images.
 5.  **(Optional) Adjust Settings**:
-    - **Preview**: Click the **Preview** tab to see a live preview of the first image with the current settings applied.
+    - **Preview**: Click the **Preview** tab to see a live preview of the first image with current settings applied, including background removal effects.
     - **Settings Tab**:
         - Set your desired **Output Width**, **Output Height**, and **Output Format**.
-        - If you select **PNG** as the output, you can also check the **Remove Background** option.
+        - **🔥 NEW**: Check **Remove Background (PNG only)** to automatically remove image backgrounds using AI. This automatically switches output format to PNG to preserve transparency.
         - Choose a new **Theme** for the application.
         - Click **Save Settings** to make them the new default.
 6.  **Convert**:
-    - On the **Converter** tab, adjust the **Quality** slider if needed.
-    - Click the **Convert Images** button.
-7.  A confirmation message will appear when the conversion is complete.
+    - On the **Converter** tab, adjust the **Quality** slider if needed (disabled for PNG format).
+    - Click the **Convert Images** button to start batch processing.
+7.  A confirmation message will appear when conversion is complete, showing successfully converted and skipped file counts.
 
 ### Running from Source
 

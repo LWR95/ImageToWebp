@@ -1,7 +1,8 @@
 {
-    "output_width": 100,
-    "output_height": 250,
+    "output_width": 500,
+    "output_height": 800,
     "output_format": "WebP",
     "quality": 85,
-    "theme": "arc"
+    "theme": "arc",
+    "remove_background": false
 }

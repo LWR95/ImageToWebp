@@ -6,12 +6,13 @@ from PIL import Image, ImageTk
 import threading
 import os
 import json
+from rembg import remove, new_session
 
 class ImageConverterApp:
     def __init__(self, root):
         self.root = root
         self.style = ThemedStyle(root)
-        self.version = "3.0"
+        self.version = "4.0"
         self.root.title(f"SHH Image Converter v{self.version}")
         self.root.geometry("650x550")
         self.root.resizable(False, False)
@@ -27,11 +28,17 @@ class ImageConverterApp:
         self.output_height = tk.IntVar(value=500)
         self.output_format = tk.StringVar(value="WebP")
         self.theme = tk.StringVar(value="arc") # Default theme
+        self.remove_background = tk.BooleanVar(value=False)
 
         # Link variables to update preview
         self.output_width.trace_add("write", lambda *args: self.update_preview())
         self.output_height.trace_add("write", lambda *args: self.update_preview())
         self.quality.trace_add("write", lambda *args: self.update_preview())
+        self.remove_background.trace_add("write", lambda *args: self.update_preview())
+
+        # Background removal session management
+        self.bg_removal_session = None
+        self.session_lock = threading.Lock()
 
         # UI Elements
         self.create_widgets()
@@ -143,8 +150,14 @@ class ImageConverterApp:
         theme_menu.grid(row=4, column=1, sticky=tk.W, padx=5)
         theme_menu.bind("<<ComboboxSelected>>", lambda e: self.set_theme())
 
+        # Background Removal
+        ttk.Label(settings_frame, text="Background Removal:").grid(row=5, column=0, sticky=tk.W, pady=(10, 5))
+        bg_remove_check = ttk.Checkbutton(settings_frame, text="Remove Background (PNG only)", 
+                                         variable=self.remove_background, command=self.on_bg_remove_change)
+        bg_remove_check.grid(row=5, column=1, sticky=tk.W, padx=5)
+
         # Save Settings Button
-        ttk.Button(settings_frame, text="Save Settings", command=self.save_settings).grid(row=5, column=0, columnspan=2, pady=10)
+        ttk.Button(settings_frame, text="Save Settings", command=self.save_settings).grid(row=6, column=0, columnspan=2, pady=10)
 
     def handle_drop(self, event):
         # The event.data is a string containing one or more file paths, possibly enclosed in braces
@@ -176,13 +189,23 @@ class ImageConverterApp:
             self.quality_label_value.config(state="normal")
         self.update_preview()
 
+    def on_bg_remove_change(self):
+        # Force PNG format when background removal is enabled
+        if self.remove_background.get():
+            if self.output_format.get() != "PNG":
+                self.output_format.set("PNG")
+                self.on_format_change()  # Update quality slider state
+                messagebox.showinfo("Format Changed", "Output format changed to PNG for background removal.")
+        self.update_preview()
+
     def save_settings(self):
         settings = {
             "output_width": self.output_width.get(),
             "output_height": self.output_height.get(),
             "output_format": self.output_format.get(),
             "quality": self.quality.get(),
-            "theme": self.theme.get()
+            "theme": self.theme.get(),
+            "remove_background": self.remove_background.get()
         }
         try:
             with open(self.config_file, 'w') as f:
@@ -202,6 +225,7 @@ class ImageConverterApp:
                     self.output_format.set(settings.get("output_format", "WebP"))
                     self.quality.set(settings.get("quality", 85))
                     self.theme.set(settings.get("theme", "arc"))
+                    self.remove_background.set(settings.get("remove_background", False))
             # Set theme regardless of whether settings were loaded, to ensure a theme is always applied
             self.set_theme()
             self.on_format_change() # Update UI based on loaded settings
@@ -209,6 +233,17 @@ class ImageConverterApp:
         except Exception as e:
             self.set_theme() # Ensure theme is set even on error
             messagebox.showerror("Error", f"Failed to load settings:\n{e}")
+
+    def get_bg_removal_session(self):
+        """Get or create a background removal session (thread-safe)"""
+        with self.session_lock:
+            if self.bg_removal_session is None:
+                try:
+                    self.bg_removal_session = new_session('u2net')
+                except Exception as e:
+                    print(f"Warning: Failed to create background removal session: {e}")
+                    return None
+            return self.bg_removal_session
 
     def select_source_dir(self):
         path = filedialog.askdirectory()
@@ -273,14 +308,45 @@ class ImageConverterApp:
             # Create the image as it would be after conversion settings are applied
             img_after_base = original_image.copy()
             
+            # Apply background removal if enabled
+            if self.remove_background.get():
+                try:
+                    session = self.get_bg_removal_session()
+                    if session is not None:
+                        # Convert to bytes for rembg processing
+                        from io import BytesIO
+                        img_bytes = BytesIO()
+                        img_after_base.save(img_bytes, format='PNG')
+                        img_bytes.seek(0)
+                        
+                        # Remove background
+                        bg_removed_bytes = remove(img_bytes.getvalue(), session=session)
+                        bg_removed_img = Image.open(BytesIO(bg_removed_bytes))
+                        img_after_base = bg_removed_img
+                        
+                        # Ensure PNG format when background is removed
+                        if output_format != "PNG":
+                            output_format = "PNG"
+                            self.output_format.set("PNG")
+                    else:
+                        print("Warning: Background removal session not available")
+                except Exception as e:
+                    print(f"Background removal failed in preview: {e}")
+            
             # Handle transparency correctly for the conversion process
-            if output_format != "PNG" and (img_after_base.mode in ('RGBA', 'LA') or (img_after_base.mode == 'P' and 'transparency' in img_after_base.info)):
-                background_flatten = Image.new("RGB", img_after_base.size, (255, 255, 255))
-                img_rgba = img_after_base.convert("RGBA")
-                background_flatten.paste(img_rgba, mask=img_rgba)
-                img_after_base = background_flatten
-            elif img_after_base.mode not in ("RGB", "RGBA"):
-                img_after_base = img_after_base.convert("RGB")
+            # Skip transparency flattening if background removal is enabled (preserve transparency)
+            if not self.remove_background.get():
+                if output_format != "PNG" and (img_after_base.mode in ('RGBA', 'LA') or (img_after_base.mode == 'P' and 'transparency' in img_after_base.info)):
+                    background_flatten = Image.new("RGB", img_after_base.size, (255, 255, 255))
+                    img_rgba = img_after_base.convert("RGBA")
+                    background_flatten.paste(img_rgba, mask=img_rgba)
+                    img_after_base = background_flatten
+                elif img_after_base.mode not in ("RGB", "RGBA"):
+                    img_after_base = img_after_base.convert("RGB")
+            else:
+                # For background removal, ensure RGBA mode to preserve transparency
+                if img_after_base.mode != "RGBA":
+                    img_after_base = img_after_base.convert("RGBA")
 
             img_after_base.thumbnail((output_width, output_height))
             
@@ -288,7 +354,12 @@ class ImageConverterApp:
             final_processed_image = Image.new('RGBA', (output_width, output_height), (255, 255, 255, 0))
             paste_x = (output_width - img_after_base.width) // 2
             paste_y = (output_height - img_after_base.height) // 2
-            final_processed_image.paste(img_after_base, (paste_x, paste_y))
+            
+            # Use appropriate paste method for transparency
+            if img_after_base.mode == 'RGBA':
+                final_processed_image.paste(img_after_base, (paste_x, paste_y), img_after_base)
+            else:
+                final_processed_image.paste(img_after_base, (paste_x, paste_y))
 
             if output_format != "PNG":
                 final_processed_image = final_processed_image.convert("RGB")
@@ -340,21 +411,51 @@ class ImageConverterApp:
                     img = Image.open(image_path)
                     img_original_mode = img.mode
 
+                    # Apply background removal if enabled
+                    if self.remove_background.get():
+                        try:
+                            session = self.get_bg_removal_session()
+                            if session is not None:
+                                # Convert to bytes for rembg processing
+                                from io import BytesIO
+                                img_bytes = BytesIO()
+                                img.save(img_bytes, format='PNG')
+                                img_bytes.seek(0)
+                                
+                                # Remove background
+                                bg_removed_bytes = remove(img_bytes.getvalue(), session=session)
+                                bg_removed_img = Image.open(BytesIO(bg_removed_bytes))
+                                img = bg_removed_img
+                                
+                                # Force PNG format when background is removed
+                                output_format = "PNG"
+                            else:
+                                print(f"Warning: Background removal session not available for {filename}")
+                        except Exception as e:
+                            print(f"Background removal failed for {filename}: {e}")
+
                     # Handle transparency
-                    if output_format == "PNG" and img_original_mode in ('RGBA', 'LA', 'P'):
-                        img = img.convert("RGBA")
-                    else:
-                        if img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info):
-                            background_for_flattening = Image.new("RGB", img.size, (255, 255, 255))
-                            img_rgba = img.convert("RGBA")
-                            background_for_flattening.paste(img_rgba, mask=img_rgba)
-                            img = background_for_flattening
+                    # Skip transparency flattening if background removal is enabled (preserve transparency)
+                    if not self.remove_background.get():
+                        if output_format == "PNG" and img_original_mode in ('RGBA', 'LA', 'P'):
+                            img = img.convert("RGBA")
                         else:
-                            img = img.convert('RGB')
+                            if img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info):
+                                background_for_flattening = Image.new("RGB", img.size, (255, 255, 255))
+                                img_rgba = img.convert("RGBA")
+                                background_for_flattening.paste(img_rgba, mask=img_rgba)
+                                img = background_for_flattening
+                            else:
+                                img = img.convert('RGB')
+                    else:
+                        # For background removal, ensure RGBA mode to preserve transparency
+                        if img.mode != "RGBA":
+                            img = img.convert("RGBA")
 
                     img.thumbnail((width, height))
                     
-                    if output_format == "PNG" and img_original_mode in ('RGBA', 'LA', 'P'):
+                    # Create appropriate background based on whether we have transparency
+                    if self.remove_background.get() or (output_format == "PNG" and img.mode == 'RGBA'):
                          background = Image.new('RGBA', (width, height), (255, 255, 255, 0))
                     else:
                         background = Image.new('RGB', (width, height), (255, 255, 255))
@@ -362,7 +463,11 @@ class ImageConverterApp:
                     paste_x = (width - img.width) // 2
                     paste_y = (height - img.height) // 2
                     
-                    background.paste(img, (paste_x, paste_y))
+                    # Use appropriate paste method for transparency
+                    if img.mode == 'RGBA' and background.mode == 'RGBA':
+                        background.paste(img, (paste_x, paste_y), img)
+                    else:
+                        background.paste(img, (paste_x, paste_y))
 
                     base_filename, _ = os.path.splitext(filename)
                     output_extension = output_format.lower()
