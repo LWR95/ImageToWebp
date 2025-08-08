@@ -3,9 +3,9 @@
 ## 🚀 **Quick Start**
 
 ### **Download and Launch**
-1. Get `SHH_Image_Converter_v4_SingleFile.exe` (147MB)
+1. Get `SHH_Image_Converter_v4_SingleFile.exe` (~100–200MB)
 2. Double-click to launch (professional loading screen shows progress)
-3. Wait 15-25 seconds for first startup
+3. Wait 15–25 seconds for first startup
 
 ### **Basic Image Conversion**
 1. **Select Source**: Drag folder onto window or click Browse
@@ -17,14 +17,14 @@
 ### **AI Background Removal**
 1. Go to Settings tab
 2. Check "Remove Background (PNG only)"
-3. Output automatically switches to PNG format
+3. Output automatically switches to PNG format and quality slider is disabled
 4. Preview shows AI results in real-time
-5. Convert processes images with transparent backgrounds
+5. Convert processes images with transparent backgrounds (PNG)
 
 ## 📋 **System Requirements**
 - **OS**: Windows 10/11 (64-bit)
 - **RAM**: 4GB minimum, 8GB recommended for AI
-- **Storage**: 200MB free space
+- **Storage**: 200MB+ free space (first AI use downloads ~176MB model to cache)
 - **Dependencies**: None (completely standalone)
 
 ## 🔧 **Advanced Settings**
@@ -42,7 +42,7 @@
 ### **AI Processing Tips**
 - Enable only when transparency needed (slower)
 - Uses ~1.5GB RAM during processing
-- First use takes extra 2-3 seconds to load model
+- First use takes extra 2–3 seconds to load model (downloaded on demand if not cached)
 - Results automatically saved as PNG
 
 ## 🚀 **For IT Deployment**
@@ -62,10 +62,11 @@
 ## 🔧 **Troubleshooting**
 
 ### **Common Issues**
-- **Slow startup**: Normal 15-25 seconds first launch
+- **Slow startup**: Normal 15–25 seconds first launch
 - **Out of memory**: Close other apps during AI processing
-- **AI not working**: Ensure 4GB+ RAM available
+- **AI not working**: Ensure 4GB+ RAM and internet access for first model download if cache empty
 - **File not found**: Check source folder has supported images
+- **Invalid dimensions**: Empty/invalid width/height fields revert to safe defaults automatically
 
 ### **Supported Formats**
 - **Input**: JPG, JPEG, PNG, WebP, BMP, TIFF

@@ -262,6 +262,14 @@ class ImageConverterApp:
             self.convert_button.config(state="normal")
         self.update_preview()
 
+    def _get_positive_int(self, var: tk.Variable, default: int) -> int:
+        """Safely get a positive int from a Tk variable; fallback to default on empty/invalid."""
+        try:
+            val = int(var.get())
+            return max(1, val)
+        except (tk.TclError, ValueError, TypeError):
+            return default
+
     def update_preview(self):
         source = self.source_dir.get()
         if not source or not os.path.isdir(source):
@@ -301,8 +309,8 @@ class ImageConverterApp:
             self.preview_before_label.image = self.photo_before
 
             # --- After Preview ---
-            output_width = self.output_width.get()
-            output_height = self.output_height.get()
+            output_width = self._get_positive_int(self.output_width, 500)
+            output_height = self._get_positive_int(self.output_height, 500)
             output_format = self.output_format.get()
 
             # Create the image as it would be after conversion settings are applied
@@ -395,8 +403,8 @@ class ImageConverterApp:
             source = self.source_dir.get()
             dest = self.dest_dir.get()
             quality = self.quality.get()
-            width = self.output_width.get()
-            height = self.output_height.get()
+            width = self._get_positive_int(self.output_width, 500)
+            height = self._get_positive_int(self.output_height, 500)
             output_format = self.output_format.get()
             
             image_files = [f for f in os.listdir(source) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.tiff'))]
