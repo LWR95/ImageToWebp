@@ -1,11 +1,15 @@
-# SHH Image Converter v4.0 - Complete User Guide
+# SHH Image Converter v4.1 - Complete User Guide
 
 ## 🚀 **Quick Start**
 
 ### **Download and Launch**
-1. Get `SHH_Image_Converter_v4_SingleFile.exe` (~100–200MB)
-2. Double-click to launch (professional loading screen shows progress)
-3. Wait 15–25 seconds for first startup
+1. Get the `SHH_Image_Converter_v4_Complete` folder (~360MB with AI) or `SHH_Image_Converter_v4_Fast` folder (~70MB without AI)
+2. Run `SHH_Image_Converter_v4_Complete.exe` (launches in 2-3 seconds)
+3. Professional loading screen with minimal delay
+
+### **Choose Your Build**
+- **Complete Build**: Full AI functionality (~360MB, 2-3s startup)
+- **Fast Build**: Basic conversion only (~70MB, <1s startup)
 
 ### **Basic Image Conversion**
 1. **Select Source**: Drag folder onto window or click Browse
@@ -14,17 +18,21 @@
 4. **Preview**: Check Preview tab to see results
 5. **Convert**: Click Convert Images on main tab
 
-### **AI Background Removal**
+### **AI Background Removal** (Complete Build Only)
 1. Go to Settings tab
 2. Check "Remove Background (PNG only)"
 3. Output automatically switches to PNG format and quality slider is disabled
 4. Preview shows AI results in real-time
 5. Convert processes images with transparent backgrounds (PNG)
+6. **Note**: AI functionality requires the Complete Build
 
 ## 📋 **System Requirements**
 - **OS**: Windows 10/11 (64-bit)
-- **RAM**: 4GB minimum, 8GB recommended for AI
-- **Storage**: 200MB+ free space (first AI use downloads ~176MB model to cache)
+- **RAM**: 4GB minimum, 8GB recommended for AI (Complete Build)
+- **Storage**: 
+  - Complete Build: ~360MB
+  - Fast Build: ~70MB
+  - AI Model Cache: ~176MB (downloaded on first AI use)
 - **Dependencies**: None (completely standalone)
 
 ## 🔧 **Advanced Settings**
@@ -39,11 +47,12 @@
 - **Web**: 800x600, 1024x768
 - **Print**: 2048x2048, 3000x3000
 
-### **AI Processing Tips**
-- Enable only when transparency needed (slower)
+### **AI Processing Tips** (Complete Build)
+- Enable only when transparency needed (slower processing)
 - Uses ~1.5GB RAM during processing
 - First use takes extra 2–3 seconds to load model (downloaded on demand if not cached)
 - Results automatically saved as PNG
+- **Fast Build**: AI functionality not available (use Complete Build for background removal)
 
 ## 🚀 **For IT Deployment**
 

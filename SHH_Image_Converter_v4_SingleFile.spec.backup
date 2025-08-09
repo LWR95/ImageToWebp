@@ -1,0 +1,89 @@
+# -*- mode: python ; coding: utf-8 -*-
+# SHH Image Converter v4.0 Standalone Single-File Build
+# Simplified spec to avoid Python 3.13 compatibility issues
+
+a = Analysis(
+    ['image_converter.py'],
+    pathex=[],
+    binaries=[],
+    datas=[
+        ('config.json', '.'),
+    ],
+    hiddenimports=[
+        # Core UI
+        'tkinter',
+        'tkinter.filedialog',
+        'tkinter.messagebox',
+        'tkinter.simpledialog',
+        'tkinter.font',
+        'tkinterdnd2',
+        'ttkthemes',
+        
+        # Image processing
+        'PIL',
+        'PIL.Image',
+        'PIL.ImageTk',
+        'PIL.ImageDraw',
+        'PIL.ImageFont',
+        'PIL.ExifTags',
+        
+        # Background removal
+        'rembg',
+        'rembg.sessions',
+        'rembg.sessions.u2net',
+        'onnxruntime',
+        'numpy',
+        'cv2',
+        'scipy',
+        'scipy.ndimage',
+        
+        # Network and utilities
+        'requests',
+        'urllib3',
+        'pooch',
+        'platformdirs',
+        'gdown',
+        'tqdm',
+        'filelock',
+        
+        # Standard library
+        'json',
+        'threading',
+        'io',
+        'pathlib',
+        'os',
+        'sys',
+        'time',
+        'gc',
+    ],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+    optimize=0,
+)
+
+pyz = PYZ(a.pure)
+
+# Single-file executable
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.datas,
+    [],
+    name='SHH_Image_Converter_v4_SingleFile',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    runtime_tmpdir=None,
+    console=False,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+)

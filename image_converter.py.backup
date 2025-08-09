@@ -6,51 +6,13 @@ from PIL import Image, ImageTk
 import threading
 import os
 import json
-
-class AIManager:
-    def __init__(self):
-        self._rembg = None
-        self._session = None
-        self._session_lock = threading.Lock()
-    
-    def get_session(self):
-        """Get or create background removal session (thread-safe)"""
-        with self._session_lock:
-            if self._session is None:
-                # Load rembg library if not already loaded
-                if self._rembg is None:
-                    try:
-                        import rembg
-                        self._rembg = rembg
-                    except ImportError as e:
-                        print(f"AI libraries not available: {e}")
-                        return None
-                
-                # Create session if library loaded successfully
-                if self._rembg is not None:
-                    try:
-                        self._session = self._rembg.new_session('u2net')
-                    except Exception as e:
-                        print(f"Failed to create AI session: {e}")
-                        return None
-            return self._session
-    
-    def remove_background(self, image_bytes):
-        """Remove background from image with error handling"""
-        session = self.get_session()
-        if session is None:
-            return None
-        try:
-            return self._rembg.remove(image_bytes, session=session)
-        except Exception as e:
-            print(f"Background removal failed: {e}")
-            return None
+from rembg import remove, new_session
 
 class ImageConverterApp:
     def __init__(self, root):
         self.root = root
         self.style = ThemedStyle(root)
-        self.version = "4.1"
+        self.version = "4.0"
         self.root.title(f"SHH Image Converter v{self.version}")
         self.root.geometry("650x550")
         self.root.resizable(False, False)
@@ -75,7 +37,8 @@ class ImageConverterApp:
         self.remove_background.trace_add("write", lambda *args: self.update_preview())
 
         # Background removal session management
-        self.ai_manager = AIManager()
+        self.bg_removal_session = None
+        self.session_lock = threading.Lock()
 
         # UI Elements
         self.create_widgets()
@@ -273,7 +236,14 @@ class ImageConverterApp:
 
     def get_bg_removal_session(self):
         """Get or create a background removal session (thread-safe)"""
-        return self.ai_manager.get_session()
+        with self.session_lock:
+            if self.bg_removal_session is None:
+                try:
+                    self.bg_removal_session = new_session('u2net')
+                except Exception as e:
+                    print(f"Warning: Failed to create background removal session: {e}")
+                    return None
+            return self.bg_removal_session
 
     def select_source_dir(self):
         path = filedialog.askdirectory()
@@ -358,17 +328,14 @@ class ImageConverterApp:
                         img_bytes.seek(0)
                         
                         # Remove background
-                        bg_removed_bytes = self.ai_manager.remove_background(img_bytes.getvalue())
-                        if bg_removed_bytes is not None:
-                            bg_removed_img = Image.open(BytesIO(bg_removed_bytes))
-                            img_after_base = bg_removed_img
-                            
-                            # Ensure PNG format when background is removed
-                            if output_format != "PNG":
-                                output_format = "PNG"
-                                self.output_format.set("PNG")
-                        else:
-                            print("Warning: Background removal failed, continuing without AI")
+                        bg_removed_bytes = remove(img_bytes.getvalue(), session=session)
+                        bg_removed_img = Image.open(BytesIO(bg_removed_bytes))
+                        img_after_base = bg_removed_img
+                        
+                        # Ensure PNG format when background is removed
+                        if output_format != "PNG":
+                            output_format = "PNG"
+                            self.output_format.set("PNG")
                     else:
                         print("Warning: Background removal session not available")
                 except Exception as e:
@@ -464,15 +431,12 @@ class ImageConverterApp:
                                 img_bytes.seek(0)
                                 
                                 # Remove background
-                                bg_removed_bytes = self.ai_manager.remove_background(img_bytes.getvalue())
-                                if bg_removed_bytes is not None:
-                                    bg_removed_img = Image.open(BytesIO(bg_removed_bytes))
-                                    img = bg_removed_img
-                                    
-                                    # Force PNG format when background is removed
-                                    output_format = "PNG"
-                                else:
-                                    print(f"Warning: Background removal failed for {filename}, continuing without AI")
+                                bg_removed_bytes = remove(img_bytes.getvalue(), session=session)
+                                bg_removed_img = Image.open(BytesIO(bg_removed_bytes))
+                                img = bg_removed_img
+                                
+                                # Force PNG format when background is removed
+                                output_format = "PNG"
                             else:
                                 print(f"Warning: Background removal session not available for {filename}")
                         except Exception as e:

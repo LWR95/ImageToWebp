@@ -37,9 +37,12 @@ class LoadingScreen:
         
         # Loading steps
         self.loading_steps = [
-            ("Starting application...", 30),
-            ("Loading interface...", 70),
-            ("Ready!", 100)
+            ("Extracting application files...", 25),
+            ("Loading Python runtime...", 45),
+            ("Initializing image processing libraries...", 65),
+            ("Setting up user interface...", 80),
+            ("Preparing AI background removal...", 95),
+            ("Ready to launch!", 100)
         ]
         self.current_step = 0
         
@@ -177,22 +180,22 @@ class LoadingScreen:
         for i, (status, progress) in enumerate(self.loading_steps):
             self.update_progress(progress, status)
             
-            # Minimal timing for UI updates
+            # Realistic timing for each step
             if i == 0:  # Extraction - longest step
-                time.sleep(0.2)
+                time.sleep(3.0)
             elif i == 1:  # Python runtime
-                time.sleep(0.1)
+                time.sleep(2.5)
             elif i == 2:  # Libraries
-                time.sleep(0.1)
+                time.sleep(2.0)
             elif i == 3:  # UI setup
-                time.sleep(0.1)
+                time.sleep(1.5)
             elif i == 4:  # AI prep
-                time.sleep(0.1)
+                time.sleep(1.0)
             else:  # Ready
-                time.sleep(0.1)
+                time.sleep(0.5)
         
         # Hold "Ready" state briefly
-        time.sleep(0.1)
+        time.sleep(0.5)
         
     def show_loading(self, callback):
         """Show loading screen and run callback when complete"""

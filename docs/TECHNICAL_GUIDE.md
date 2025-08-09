@@ -1,4 +1,32 @@
-# Technical Implementation Guide
+# Technical Implementation Guide - v4.1
+
+## Performance Optimization (v4.1)
+
+### **Architectural Changes**
+- **Multi-File Distribution**: Replaced single-file for dramatic startup improvement
+- **Lazy AI Loading**: AIManager class for on-demand rembg initialization
+- **Build Variants**: Complete (with AI) vs Fast (without AI) configurations
+- **Startup Optimization**: 2-3 second startup (89% improvement from v4.0)
+
+### **AIManager Implementation**
+```python
+class AIManager:
+    def __init__(self):
+        self._rembg = None
+        self._session = None
+        self._session_lock = threading.Lock()
+    
+    def get_session(self):
+        """Thread-safe lazy loading of rembg session"""
+        with self._session_lock:
+            if self._session is None:
+                # Import rembg only when needed
+                if self._rembg is None:
+                    import rembg
+                    self._rembg = rembg
+                self._session = self._rembg.new_session('u2net')
+            return self._session
+```
 
 ## AI Background Removal Implementation
 
@@ -15,35 +43,55 @@
 - **UI Integration**: Checkbox toggle with automatic PNG output and quality slider disable for PNG
 
 ### **PyInstaller Configuration**
+
+#### **Complete Build (Recommended)**
 ```python
-# Key settings for successful build (see SHH_Image_Converter_v4_SingleFile.spec)
+# SHH_Image_Converter_v4_Complete.spec - Full functionality
 a = Analysis(
     ['image_converter.py'],
-    datas=[('config.json', '.' )],  # persist settings in packaged app
-    hiddenimports=[
-        # UI
-        'tkinter', 'tkinterdnd2', 'ttkthemes', 'PIL', 'PIL.Image', 'PIL.ImageTk',
-        # AI & image processing
-        'rembg', 'onnxruntime', 'numpy', 'cv2', 'scipy',
-        # Model download plumbing used by rembg
-        'requests', 'urllib3', 'pooch', 'platformdirs', 'filelock', 'tqdm', 'gdown',
+    datas=[
+        ('config.json', '.'),
+        # Include rembg package data for AI functionality
+        ('C:\\...\\site-packages\\rembg', 'rembg'),
     ],
-    # ...other spec fields...
+    hiddenimports=[
+        # UI & Core
+        'tkinter', 'tkinterdnd2', 'ttkthemes', 'PIL',
+        # AI libraries (required for background removal)
+        'rembg', 'onnxruntime', 'numpy', 'cv2', 'scipy',
+        'pooch', 'tqdm',  # Model download dependencies
+    ],
+    excludes=[
+        # Problematic setuptools to avoid pkg_resources errors
+        'setuptools', 'pkg_resources', 'jaraco',
+        # GPU providers (CPU-only build)
+        'onnxruntime.providers.cuda',
+    ],
 )
-exe = EXE(..., console=False, upx=True)
+exe = EXE(..., exclude_binaries=True)  # Multi-file for speed
+coll = COLLECT(exe, a.binaries, a.datas)
+```
+
+#### **Fast Build (No AI)**
+```python
+# SHH_Image_Converter_v4_Fast.spec - Minimal size
+# Excludes: rembg, onnxruntime, scipy, cv2
+# Result: ~70MB vs ~360MB complete build
 ```
 
 ### **Deployment Solutions**
-- **Single-File Mode**: Eliminates dependency issues
+- **Multi-File Distribution**: Optimized for startup speed (2-3s vs 15-25s single-file)
+- **Build Options**: Complete (~360MB with AI) or Fast (~70MB without AI)
 - **Model Caching**: AI model auto-downloads once, then reused from cache
 - **Fresh PC Testing**: Verified zero external runtimes required
-- **Loading Screen**: Professional startup experience
+- **Optimized Loading Screen**: Minimal startup delay with professional appearance
 
 ### **Performance Optimization**
-- **Lazy Loading**: AI model loads only when first used
+- **Lazy Loading**: AI model loads only when first used via AIManager
 - **Memory**: ~1.5GB peak during AI processing on CPU
-- **Threading**: Non-blocking UI during AI processing
+- **Threading**: Non-blocking UI during AI processing with thread-safe session management
 - **Resource Management**: Reuse session, avoid reallocation within loops
+- **Startup Speed**: Multi-file architecture eliminates extraction overhead
 
 ## Build Process
 

@@ -1,13 +1,19 @@
-# 🖼️ SHH Image Converter v4.0 - AI-Powered Edition
+# 🖼️ SHH Image Converter v4.1 - AI-Powered Edition
 
-**Professional image conversion tool with AI background removal and loading screen**
+**Professional image conversion tool with AI background removal and optimized startup**
 
-[![Version](https://img.shields.io/badge/Version-4.0-blue.svg)](https://github.com/LWR95/ImageToWebp)
+[![Version](https://img.shields.io/badge/Version-4.1-blue.svg)](https://github.com/LWR95/ImageToWebp)
 [![Python](https://img.shields.io/badge/Python-3.13-green.svg)](https://python.org)
 [![AI](https://img.shields.io/badge/AI-U²Net%20Background%20Removal-orange.svg)](https://github.com/danielgatis/rembg)
-[![Standalone](https://img.shields.io/badge/Deployment-Standalone%20EXE-red.svg)](https://pyinstaller.org)
+[![Standalone](https://img.shields.io/badge/Deployment-Multi--File%20EXE-red.svg)](https://pyinstaller.org)
 
-## 🚀 **What's New in v4.0**
+## 🚀 **What's New in v4.1**
+
+### ⚡ **Dramatic Performance Improvements**
+- **Lightning Fast Startup**: 2-3 seconds (down from 15-25s)
+- **Multi-File Distribution**: Optimized deployment for instant loading
+- **Smart Build Options**: Choose between Complete (with AI) or Fast (without AI)
+- **Lazy AI Loading**: Background removal loads only when needed
 
 ### ✨ **AI Background Removal**
 - **Deep Learning Model**: U²-Net architecture (downloaded on first use, ~176MB cached)
@@ -17,16 +23,16 @@
 - **Memory Optimized**: Smart session management for large batches
 
 ### 🎨 **Enhanced User Experience**
-- **Professional Loading Screen**: Progress indicator during startup (15–25s for single-file EXE)
+- **Optimized Loading Screen**: Minimal startup delay with professional appearance
 - **Modern UI**: Clean, intuitive interface with drag-and-drop support
 - **Real-time Preview**: See changes before conversion
 - **Status Updates**: Clear feedback during processing
 - **Settings Persistence**: Remembers preferences between sessions
 
-### 📦 **True Standalone Deployment**
-- **Single File**: ~100–200MB executable with zero external runtimes
-- **Fresh PC Ready**: Works on any Windows computer without installation
-- **No Runtime Required**: Python or VC++ not required by user
+### 📦 **Smart Distribution Options**
+- **Complete Build**: ~360MB with full AI functionality (2-3s startup)
+- **Fast Build**: ~70MB without AI for rapid deployment
+- **Multi-File**: Optimized architecture for instant loading
 - **Professional Distribution**: Enterprise-ready deployment
 
 ## 🎯 **Core Features**
@@ -49,15 +55,20 @@
 
 - **Operating System**: Windows 10/11 (64-bit)
 - **Memory**: 4GB RAM minimum, 8GB recommended for AI processing
-- **Storage**: 200MB+ for app and cache; initial AI use downloads ~176MB model
+- **Storage**: 
+  - Complete Build: ~360MB (includes AI functionality)
+  - Fast Build: ~70MB (basic conversion only)
+  - AI Model Cache: ~176MB (downloaded on first AI use)
 - **Dependencies**: None - completely standalone
 
 ## 🚀 **Quick Start**
 
 ### **Using the Standalone Executable**
 
-1. **Download**: Get `SHH_Image_Converter_v4_SingleFile.exe`
-2. **Launch**: Double-click to start (shows professional loading screen)
+1. **Download**: Get the `SHH_Image_Converter_v4_Complete` folder (recommended)
+   - **Complete**: Full AI functionality (~360MB, 2-3s startup)
+   - **Fast**: Basic conversion only (~70MB, instant startup)
+2. **Launch**: Run `SHH_Image_Converter_v4_Complete.exe` (loads in 2-3 seconds)
 3. **Select Source**: Drag folder onto window or use Browse button
 4. **Select Destination**: Choose output folder for converted images
 5. **Configure Settings**:
@@ -67,31 +78,46 @@
 6. **Preview**: Check the Preview tab to see results before conversion
 7. **Convert**: Click Convert Images to start batch processing
 
-### **Run/Build from Source (PowerShell)**
+### **Build Options (PowerShell)**
 ```powershell
+# Install dependencies
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
+
+# Run from source
 python image_converter.py
-# Build single-file executable
-python -m PyInstaller .\SHH_Image_Converter_v4_SingleFile.spec
+
+# Build complete version (recommended - includes AI)
+python -m PyInstaller .\SHH_Image_Converter_v4_Complete.spec
+
+# Build fast version (no AI, smaller size)
+python -m PyInstaller .\SHH_Image_Converter_v4_Fast.spec
 ```
 
 ## 📊 **Performance & Technical Details**
 
-- **First Launch**: 15–25s (single-file extraction)
-- **AI Warmup**: 2–3s on first AI use
+| Build Type | Startup Time | Size | AI Background Removal | Best For |
+|------------|-------------|------|---------------------|----------|
+| **Complete** | 2-3s | ~360MB | ✅ Full functionality | Production use |
+| **Fast** | <1s | ~70MB | ❌ Not included | Quick deployment |
+| Legacy Single-File | 15-25s | ~150MB | ✅ Included | Archive only |
+
+- **AI Warmup**: 2–3s on first AI use (model loading)
 - **Memory Usage**: ~1.5GB during AI processing
 - **Safety**: Numeric fields are validated; empty/invalid width/height fall back to defaults
+- **Threading**: UI remains responsive during conversion
 
 ## 🗂️ **Project Structure**
 
 ```
 ImageToWebp/
-├── image_converter.py      # Main application code (GUI, preview, conversion, AI session caching)
-├── loading_screen.py       # Startup loading screen
+├── image_converter.py      # Main application code (GUI, preview, conversion, AIManager)
+├── loading_screen.py       # Optimized startup loading screen
 ├── config.json             # User settings
 ├── requirements.txt        # Pinned dependencies
-├── SHH_Image_Converter_v4_SingleFile.spec  # Build configuration
+├── SHH_Image_Converter_v4_Complete.spec    # Primary build (with AI)
+├── SHH_Image_Converter_v4_Fast.spec        # Fast build (no AI)
+├── SHH_Image_Converter_v4_SingleFile.spec  # Legacy build (deprecated)
 ├── .github/
 │   ├── copilot-instructions.md
 │   └── instructions/
@@ -105,6 +131,7 @@ ImageToWebp/
 
 ## 📈 **Version History**
 
+- **v4.1**: Performance optimization (2-3s startup), multi-file builds, lazy AI loading
 - **v4.0**: AI background removal + loading screen + single-file EXE
 - Earlier versions: batch processing, themes, preview, basic conversion
 
@@ -114,4 +141,4 @@ Contributions welcome. Follow PEP 8, add type hints for new functions, and keep 
 
 ---
 
-**SHH Image Converter v4.0** - Professional image processing with AI-powered background removal
+**SHH Image Converter v4.1** - Professional image processing with AI-powered background removal and lightning-fast startup
