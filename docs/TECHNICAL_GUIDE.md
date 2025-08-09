@@ -1,4 +1,27 @@
-# Technical Implementation Guide - v4.1
+# Technical Implementation Guide - v4.1.1
+
+## Latest Update (v4.1.1)
+
+### **Image Upscaling Bug Fix**
+- **Issue**: `thumbnail()` method only shrinks images, never enlarges them
+- **Fix**: Replaced with aspect-ratio preserving resize logic
+- **Impact**: Small images now properly scale up to target dimensions
+- **Quality**: Uses LANCZOS resampling for high-quality scaling
+
+### **Technical Implementation**
+```python
+# Old (buggy) code:
+img.thumbnail((width, height))  # Only shrinks, never enlarges
+
+# New (fixed) code:
+img_width, img_height = img.size
+scale_factor = min(width / img_width, height / img_height)
+
+if scale_factor != 1.0:
+    new_width = int(img_width * scale_factor)
+    new_height = int(img_height * scale_factor)
+    img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+```
 
 ## Performance Optimization (v4.1)
 

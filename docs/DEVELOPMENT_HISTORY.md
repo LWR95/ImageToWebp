@@ -1,5 +1,21 @@
 # SHH Image Converter - Complete Development Log
 
+## v4.1.1 - Image Upscaling Bug Fix (August 2025)
+
+### ✅ **Critical Bug Resolution**
+- **Fixed Image Upscaling**: Small images now properly scale up to target dimensions
+- **Preview Consistency**: Final output matches preview exactly for all image sizes
+- **Quality Enhancement**: LANCZOS resampling for smooth, high-quality scaling
+- **Logic Correction**: Replaced `thumbnail()` with proper aspect-ratio preserving resize
+
+### **Technical Details**
+- **Root Cause**: `img.thumbnail()` only shrinks images, never enlarges them
+- **Solution**: Implemented scale factor calculation with `img.resize()` and LANCZOS resampling
+- **Impact**: Both upscaling and downscaling now work correctly
+- **Validation**: Verified with 100x100 → 800x600 test case
+
+---
+
 ## v4.1 - Performance Optimization (August 2025)
 
 ### ✅ **Performance Breakthrough**

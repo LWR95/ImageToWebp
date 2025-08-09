@@ -50,7 +50,7 @@ class ImageConverterApp:
     def __init__(self, root):
         self.root = root
         self.style = ThemedStyle(root)
-        self.version = "4.1"
+        self.version = "4.1.1"
         self.root.title(f"SHH Image Converter v{self.version}")
         self.root.geometry("650x550")
         self.root.resizable(False, False)
@@ -389,9 +389,17 @@ class ImageConverterApp:
                 if img_after_base.mode != "RGBA":
                     img_after_base = img_after_base.convert("RGBA")
 
-            img_after_base.thumbnail((output_width, output_height))
+            # Calculate scaling to fit within target dimensions while maintaining aspect ratio
+            img_width, img_height = img_after_base.size
+            scale_factor = min(output_width / img_width, output_height / img_height)
             
-            # Create a new background for pasting the thumbnail (letterboxing)
+            # Only resize if we need to scale (either up or down)
+            if scale_factor != 1.0:
+                new_width = int(img_width * scale_factor)
+                new_height = int(img_height * scale_factor)
+                img_after_base = img_after_base.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            
+            # Create a new background for pasting the scaled image (letterboxing)
             final_processed_image = Image.new('RGBA', (output_width, output_height), (255, 255, 255, 0))
             paste_x = (output_width - img_after_base.width) // 2
             paste_y = (output_height - img_after_base.height) // 2
@@ -496,7 +504,15 @@ class ImageConverterApp:
                         if img.mode != "RGBA":
                             img = img.convert("RGBA")
 
-                    img.thumbnail((width, height))
+                    # Calculate scaling to fit within target dimensions while maintaining aspect ratio
+                    img_width, img_height = img.size
+                    scale_factor = min(width / img_width, height / img_height)
+                    
+                    # Only resize if we need to scale (either up or down)
+                    if scale_factor != 1.0:
+                        new_width = int(img_width * scale_factor)
+                        new_height = int(img_height * scale_factor)
+                        img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
                     
                     # Create appropriate background based on whether we have transparency
                     if self.remove_background.get() or (output_format == "PNG" and img.mode == 'RGBA'):
@@ -505,9 +521,7 @@ class ImageConverterApp:
                         background = Image.new('RGB', (width, height), (255, 255, 255))
                     
                     paste_x = (width - img.width) // 2
-                    paste_y = (height - img.height) // 2
-                    
-                    # Use appropriate paste method for transparency
+                    paste_y = (height - img.height) // 2                    # Use appropriate paste method for transparency
                     if img.mode == 'RGBA' and background.mode == 'RGBA':
                         background.paste(img, (paste_x, paste_y), img)
                     else:

@@ -1,4 +1,4 @@
-# SHH Image Converter v4.1 - Complete User Guide
+# SHH Image Converter v4.1.1 - Complete User Guide
 
 ## 🚀 **Quick Start**
 
@@ -6,6 +6,11 @@
 1. Get the `SHH_Image_Converter_v4_Complete` folder (~360MB with AI) or `SHH_Image_Converter_v4_Fast` folder (~70MB without AI)
 2. Run `SHH_Image_Converter_v4_Complete.exe` (launches in 2-3 seconds)
 3. Professional loading screen with minimal delay
+
+### **v4.1.1 Update**
+- **Fixed**: Image upscaling now works correctly for small images
+- **Enhanced**: Preview and final output now match exactly
+- **Quality**: Improved scaling with high-quality LANCZOS resampling
 
 ### **Choose Your Build**
 - **Complete Build**: Full AI functionality (~360MB, 2-3s startup)

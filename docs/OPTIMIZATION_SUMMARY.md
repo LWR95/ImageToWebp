@@ -1,6 +1,14 @@
-# 🎉 SHH Image Converter v4.1 - Optimization Complete
+# 🎉 SHH Image Converter v4.1.1 - Upscaling Bug Fix Release
 
-## 📊 **Achievement Summary**
+## 📊 **Latest Update - v4.1.1**
+
+### **🐛 Critical Bug Fix**
+- ✅ **Fixed Image Upscaling**: Small images now properly scale up to target dimensions
+- ✅ **Preview Consistency**: Final output now matches preview exactly
+- ✅ **Quality Improvement**: Uses LANCZOS resampling for high-quality scaling
+- ✅ **Aspect Ratio**: Maintains proper aspect ratio during upscaling
+
+### **Previous Achievements - v4.1**
 
 ### **Performance Breakthrough**
 - ✅ **Startup Time**: 15-25s → **2-3s** (89% improvement)
@@ -20,7 +28,21 @@ python -m PyInstaller .\SHH_Image_Converter_v4_Complete.spec
 - **⚡ Startup**: 2-3 seconds
 - **💾 Size**: ~360MB
 - **🤖 AI**: Full background removal functionality
+- **🔧 Upscaling**: Fixed image upscaling bug (v4.1.1)
 - **✅ Status**: Production ready
+
+## 🐛 **v4.1.1 Bug Fix Details**
+
+### **Issue Resolved**
+- **Problem**: Small images (e.g., 100x100) with large output dimensions (e.g., 800x600) were not properly upscaled
+- **Symptom**: Preview showed correct upscaling, but final output contained small image on large background
+- **Root Cause**: `thumbnail()` method only shrinks images, never enlarges them
+
+### **Technical Fix**
+- **Replaced**: `img.thumbnail((width, height))` 
+- **With**: Aspect-ratio preserving resize logic using `img.resize()` with LANCZOS resampling
+- **Impact**: Both upscaling and downscaling now work correctly
+- **Quality**: High-quality resampling for smooth scaling
 
 ## 📋 **Updated Documentation**
 

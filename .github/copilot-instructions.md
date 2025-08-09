@@ -4,6 +4,7 @@ Project overview
 - Windows desktop GUI (Tkinter + ttkthemes) for batch converting images (Pillow) with optional AI background removal (rembg/U²-Net).
 - Target: Multi-file Windows 10/11 x64 executable via PyInstaller. No installer. Shows a loading screen, then launches the main app.
 - **Optimized builds**: Fast startup (2-3s) with complete AI functionality.
+- **Current version**: v4.1.1 (upscaling bug fix applied)
 
 Tech stack and constraints
 - Language/runtime: Python 3.13.5 (Windows-only).
@@ -21,6 +22,10 @@ Repository layout (high value files)
 - requirements.txt — pinned dependencies for Python 3.13.
 - docs/ — user and technical docs.
 - build/, __pycache__/ — generated artifacts; do not edit or commit.
+
+**v4.1.1 Bug Fix**
+- Fixed image upscaling logic: replaced `thumbnail()` with proper aspect-ratio preserving resize using LANCZOS resampling.
+- Ensures preview and final output match exactly for all image sizes.
 
 Run and validate (PowerShell)
 1) Install deps (fresh or after Python upgrade):
@@ -59,6 +64,11 @@ Coding conventions and invariants
   - Rely on a cached rembg session via new_session('u2net') protected by a lock.
 - Settings persistence: write/read config.json keys: output_width, output_height, output_format, quality, theme, remove_background. Keep backward-compatible defaults.
 - Version: update ImageConverterApp.version in image_converter.py and keep docs/ and release names consistent.
+
+**v4.1.1 Upscaling Fix**
+- Replaced `img.thumbnail((width, height))` with proper scaling logic that handles both upscaling and downscaling.
+- Uses aspect-ratio calculation and `img.resize()` with LANCZOS resampling for high-quality results.
+- Ensures preview preview matches final output for all image sizes.
 
 Common pitfalls and notes
 - First AI use has a model warmup (adds ~2–3s); startup after packaging takes 2-3s due to optimization.

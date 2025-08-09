@@ -1,15 +1,23 @@
-# 🖼️ SHH Image Converter v4.1 - AI-Powered Edition
+# 🖼️ SHH Image Converter v4.1.1 - AI-Powered Edition
 
 **Professional image conversion tool with AI background removal and optimized startup**
 
-[![Version](https://img.shields.io/badge/Version-4.1-blue.svg)](https://github.com/LWR95/ImageToWebp)
+[![Version](https://img.shields.io/badge/Version-4.1.1-blue.svg)](https://github.com/LWR95/ImageToWebp)
 [![Python](https://img.shields.io/badge/Python-3.13-green.svg)](https://python.org)
 [![AI](https://img.shields.io/badge/AI-U²Net%20Background%20Removal-orange.svg)](https://github.com/danielgatis/rembg)
 [![Standalone](https://img.shields.io/badge/Deployment-Multi--File%20EXE-red.svg)](https://pyinstaller.org)
 
-## 🚀 **What's New in v4.1**
+## 🚀 **What's New in v4.1.1**
 
-### ⚡ **Dramatic Performance Improvements**
+### 🐛 **Critical Bug Fix**
+- **Image Upscaling Fixed**: Small images now properly scale up to target dimensions
+- **Preview Consistency**: Final output matches preview exactly for all image sizes
+- **Quality Enhancement**: LANCZOS resampling for smooth, high-quality scaling
+- **Aspect Ratio**: Maintains proper proportions during upscaling
+
+### ⚡ **Previous v4.1 Achievements**
+
+### ⚡ **Previous v4.1 Achievements**
 - **Lightning Fast Startup**: 2-3 seconds (down from 15-25s)
 - **Multi-File Distribution**: Optimized deployment for instant loading
 - **Smart Build Options**: Choose between Complete (with AI) or Fast (without AI)
