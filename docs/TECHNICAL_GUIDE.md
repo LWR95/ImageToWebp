@@ -92,7 +92,11 @@ class AIManager:
 - **Thread Safety**: Background processing in separate thread with timeouts
 - **Memory Management**: Session reuse with smart caching
 - **Error Handling**: Graceful degradation if AI fails; continue without AI
-- **UI Integration**: Checkbox toggle with automatic PNG output and quality slider disable
+- **UI Integration**: Checkbox toggle with multi-format support
+- **Format Handling**: 
+  - PNG: Preserves transparency
+  - WebP/JPEG: Applies white background to removed areas
+- **Quality Control**: Quality slider remains enabled for all formats
 
 ### **PyInstaller Configuration**
 

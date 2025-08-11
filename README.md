@@ -9,6 +9,12 @@
 
 ## 🚀 **What's New in v4.1.1**
 
+### 🆕 **Multi-Format Background Removal**
+- **All Formats Supported**: Background removal now works with PNG, WebP, and JPEG
+- **Smart Background Handling**: Transparent for PNG, clean white background for others
+- **User Choice Preserved**: No more forced format conversion to PNG
+- **Consistent Results**: Preview accurately shows final output for all formats
+
 ### 🐛 **Critical Bug Fixes**
 - **Image Upscaling Fixed**: Small images now properly scale up to target dimensions
 - **Preview Consistency**: Final output matches preview exactly for all image sizes
@@ -26,8 +32,9 @@
 
 ### ✨ **AI Background Removal**
 - **Deep Learning Model**: U²-Net architecture (bundled offline, no download required)
+- **Multi-Format Support**: Works with PNG (transparent), WebP/JPEG (white background)
 - **One-Click Operation**: Simple checkbox to enable/disable AI processing
-- **Professional Quality**: Maintains transparency and edge detail
+- **Professional Quality**: Maintains transparency and edge detail for all formats
 - **Batch Processing**: Remove backgrounds from multiple images efficiently
 - **Memory Optimized**: Smart session management with timeout protection
 - **Fresh PC Ready**: Works immediately on clean Windows installations

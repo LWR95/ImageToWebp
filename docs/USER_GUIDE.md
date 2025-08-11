@@ -58,10 +58,11 @@
 - **Print**: 2048x2048, 3000x3000
 
 ### **AI Processing Tips** (Complete Build)
-- Enable only when transparency needed (slower processing)
-- Uses ~1.5GB RAM during processing
-- First use takes extra 2–3 seconds to load model (downloaded on demand if not cached)
-- Results automatically saved as PNG
+- **Background Removal**: Works with all output formats (PNG, WebP, JPEG)
+- **Transparency**: Preserved in PNG format, white background applied for WebP/JPEG
+- **Performance**: Uses ~1.5GB RAM during processing
+- **Model Loading**: First use takes extra 2–3 seconds to load AI model
+- **Output Quality**: Maintains image quality with smart background handling
 - **Fast Build**: AI functionality not available (use Complete Build for background removal)
 
 ## 🚀 **For IT Deployment**

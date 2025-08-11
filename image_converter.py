@@ -316,7 +316,7 @@ class ImageConverterApp:
 
         # Background Removal
         ttk.Label(settings_frame, text="Background Removal:").grid(row=5, column=0, sticky=tk.W, pady=(10, 5))
-        bg_remove_check = ttk.Checkbutton(settings_frame, text="Remove Background (PNG only)", 
+        bg_remove_check = ttk.Checkbutton(settings_frame, text="Remove Background (transparent for PNG, white for others)", 
                                          variable=self.remove_background, command=self.on_bg_remove_change)
         bg_remove_check.grid(row=5, column=1, sticky=tk.W, padx=5)
 
@@ -354,12 +354,8 @@ class ImageConverterApp:
         self.update_preview()
 
     def on_bg_remove_change(self):
-        # Force PNG format when background removal is enabled
-        if self.remove_background.get():
-            if self.output_format.get() != "PNG":
-                self.output_format.set("PNG")
-                self.on_format_change()  # Update quality slider state
-                messagebox.showinfo("Format Changed", "Output format changed to PNG for background removal.")
+        # Background removal works with all formats now
+        # PNG keeps transparency, others get white background
         self.update_preview()
 
     def save_settings(self):
@@ -489,11 +485,6 @@ class ImageConverterApp:
                         if bg_removed_bytes is not None:
                             bg_removed_img = Image.open(BytesIO(bg_removed_bytes))
                             img_after_base = bg_removed_img
-                            
-                            # Ensure PNG format when background is removed
-                            if output_format != "PNG":
-                                output_format = "PNG"
-                                self.output_format.set("PNG")
                         else:
                             print("Warning: Background removal failed, continuing without AI")
                     else:
@@ -502,8 +493,18 @@ class ImageConverterApp:
                     print(f"Background removal failed in preview: {e}")
             
             # Handle transparency correctly for the conversion process
-            # Skip transparency flattening if background removal is enabled (preserve transparency)
-            if not self.remove_background.get():
+            if self.remove_background.get():
+                # For background removal, handle transparency based on output format
+                if img_after_base.mode != "RGBA":
+                    img_after_base = img_after_base.convert("RGBA")
+                
+                # If output format is not PNG, apply white background
+                if output_format != "PNG":
+                    white_background = Image.new("RGB", img_after_base.size, (255, 255, 255))
+                    white_background.paste(img_after_base, mask=img_after_base)
+                    img_after_base = white_background
+            else:
+                # Normal transparency handling for non-background-removed images
                 if output_format != "PNG" and (img_after_base.mode in ('RGBA', 'LA') or (img_after_base.mode == 'P' and 'transparency' in img_after_base.info)):
                     background_flatten = Image.new("RGB", img_after_base.size, (255, 255, 255))
                     img_rgba = img_after_base.convert("RGBA")
@@ -511,10 +512,6 @@ class ImageConverterApp:
                     img_after_base = background_flatten
                 elif img_after_base.mode not in ("RGB", "RGBA"):
                     img_after_base = img_after_base.convert("RGB")
-            else:
-                # For background removal, ensure RGBA mode to preserve transparency
-                if img_after_base.mode != "RGBA":
-                    img_after_base = img_after_base.convert("RGBA")
 
             # Calculate scaling to fit within target dimensions while maintaining aspect ratio
             img_width, img_height = img_after_base.size
@@ -527,12 +524,17 @@ class ImageConverterApp:
                 img_after_base = img_after_base.resize((new_width, new_height), Image.Resampling.LANCZOS)
             
             # Create a new background for pasting the scaled image (letterboxing)
-            final_processed_image = Image.new('RGBA', (output_width, output_height), (255, 255, 255, 0))
+            # Use white background for non-PNG formats, transparent for PNG
+            if output_format == "PNG":
+                final_processed_image = Image.new('RGBA', (output_width, output_height), (255, 255, 255, 0))
+            else:
+                final_processed_image = Image.new('RGB', (output_width, output_height), (255, 255, 255))
+            
             paste_x = (output_width - img_after_base.width) // 2
             paste_y = (output_height - img_after_base.height) // 2
             
             # Use appropriate paste method for transparency
-            if img_after_base.mode == 'RGBA':
+            if img_after_base.mode == 'RGBA' and output_format == "PNG":
                 final_processed_image.paste(img_after_base, (paste_x, paste_y), img_after_base)
             else:
                 final_processed_image.paste(img_after_base, (paste_x, paste_y))
@@ -602,7 +604,7 @@ class ImageConverterApp:
                                 if bg_removed_bytes is not None:
                                     bg_removed_img = Image.open(BytesIO(bg_removed_bytes))
                                     img = bg_removed_img
-                                    output_format = "PNG"  # Force PNG when AI used
+                                    # Note: No longer forcing PNG format - user choice is respected
                                 else:
                                     if self.ai_manager.last_error:
                                         print(f"Warning: AI skip for {filename}: {self.ai_manager.last_error}")
@@ -614,8 +616,18 @@ class ImageConverterApp:
                             print(f"Background removal failed for {filename}: {e}\n{traceback.format_exc()}")
 
                     # Handle transparency
-                    # Skip transparency flattening if background removal is enabled (preserve transparency)
-                    if not self.remove_background.get():
+                    if self.remove_background.get():
+                        # For background removal, handle transparency based on output format
+                        if img.mode != "RGBA":
+                            img = img.convert("RGBA")
+                        
+                        # If output format is not PNG, apply white background
+                        if output_format != "PNG":
+                            white_background = Image.new("RGB", img.size, (255, 255, 255))
+                            white_background.paste(img, mask=img)
+                            img = white_background
+                    else:
+                        # Normal transparency handling for non-background-removed images
                         if output_format == "PNG" and img_original_mode in ('RGBA', 'LA', 'P'):
                             img = img.convert("RGBA")
                         else:
@@ -626,10 +638,6 @@ class ImageConverterApp:
                                 img = background_for_flattening
                             else:
                                 img = img.convert('RGB')
-                    else:
-                        # For background removal, ensure RGBA mode to preserve transparency
-                        if img.mode != "RGBA":
-                            img = img.convert("RGBA")
 
                     # Calculate scaling to fit within target dimensions while maintaining aspect ratio
                     img_width, img_height = img.size
@@ -641,14 +649,16 @@ class ImageConverterApp:
                         new_height = int(img_height * scale_factor)
                         img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
                     
-                    # Create appropriate background based on whether we have transparency
-                    if self.remove_background.get() or (output_format == "PNG" and img.mode == 'RGBA'):
-                         background = Image.new('RGBA', (width, height), (255, 255, 255, 0))
+                    # Create appropriate background based on output format and transparency
+                    if output_format == "PNG" and (self.remove_background.get() or img.mode == 'RGBA'):
+                        background = Image.new('RGBA', (width, height), (255, 255, 255, 0))
                     else:
                         background = Image.new('RGB', (width, height), (255, 255, 255))
                     
                     paste_x = (width - img.width) // 2
-                    paste_y = (height - img.height) // 2                    # Use appropriate paste method for transparency
+                    paste_y = (height - img.height) // 2
+                    
+                    # Use appropriate paste method for transparency
                     if img.mode == 'RGBA' and background.mode == 'RGBA':
                         background.paste(img, (paste_x, paste_y), img)
                     else:
