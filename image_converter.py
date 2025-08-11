@@ -76,7 +76,7 @@ class AIManager:
                 break
         
         if not bundled_model:
-            self._log("No bundled model found; will attempt online download")
+            self._log("No bundled model found; will rely on online download during session creation")
             return False
         
         # Try to copy bundled model to first cache location

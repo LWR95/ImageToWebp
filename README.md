@@ -97,12 +97,17 @@ python -m pip install -r requirements.txt
 # Run from source
 python image_converter.py
 
+# Prepare AI model for bundling (optional - for offline builds)
+python prepare_model.py
+
 # Build complete version (recommended - includes AI)
 python -m PyInstaller .\SHH_Image_Converter_v4_Complete.spec
 
 # Build fast version (no AI, smaller size)
 python -m PyInstaller .\SHH_Image_Converter_v4_Fast.spec
 ```
+
+**Note**: The AI model (175MB) is not included in the repository. It will be automatically downloaded on first AI use, or you can run `prepare_model.py` to pre-download for offline bundling.
 
 ## 📊 **Performance & Technical Details**
 

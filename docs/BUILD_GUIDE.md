@@ -20,7 +20,26 @@
 
 ### **Build Command**
 ```powershell
+# First, obtain the AI model (one-time setup)
+python ai_diagnostic.py  # This will download the model on first run
+
+# Then build the application
 python -m PyInstaller .\SHH_Image_Converter_v4_Complete.spec
+```
+
+### **Model Setup**
+The U²-Net AI model (175MB) is not included in the repository due to size constraints. On first build or AI use:
+1. The model will be automatically downloaded to `~/.u2net/u2net.onnx`
+2. During build, it gets copied to the `models/u2net/` directory
+3. The build process includes this in the final executable
+
+**Alternative manual setup:**
+```powershell
+# Create models directory
+mkdir models\u2net
+
+# Download model manually (if needed)
+# The model will be downloaded automatically on first AI use
 ```
 
 ### **Distribution**
@@ -29,6 +48,7 @@ python -m PyInstaller .\SHH_Image_Converter_v4_Complete.spec
 - **Size**: ~535MB (includes bundled AI model + all libraries)
 - **Dependencies**: Zero - completely standalone
 - **AI Model**: Bundled u2net.onnx (175MB) in `_internal\models\u2net\`
+- **Note**: Model is automatically obtained during build process
 
 ## ⚡ **Alternative: Fast Build**
 

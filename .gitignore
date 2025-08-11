@@ -5,3 +5,11 @@ build/
 dist/
 *.spec
 .vscode/
+
+# Large AI model files (should be downloaded separately)
+models/
+*.onnx
+
+# Test files
+test_*.py
+ai_diagnostic.py
