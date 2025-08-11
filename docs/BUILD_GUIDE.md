@@ -1,20 +1,22 @@
-# Build Configuration Guide - v4.1
+# Build Configuration Guide - v4.1.1
 
 ## 📊 **Performance Comparison**
 
-| Build Type | Spec File | Startup Time | Size | AI Background Removal | Best For |
-|------------|-----------|-------------|------|---------------------|----------|
-| **Complete** | `SHH_Image_Converter_v4_Complete.spec` | 2-3s | ~360MB | ✅ Full functionality | **Recommended for production** |
-| **Fast** | `SHH_Image_Converter_v4_Fast.spec` | <1s | ~70MB | ❌ Not included | Quick deployment, basic conversion |
-| Legacy Single-File | `SHH_Image_Converter_v4_SingleFile.spec` | 15-25s | ~150MB | ✅ Included | Archive/compatibility only |
+| Build Type | Spec File | Startup Time | Size | AI Background Removal | Fresh PC Ready | Best For |
+|------------|-----------|-------------|------|---------------------|----------------|----------|
+| **Complete** | `SHH_Image_Converter_v4_Complete.spec` | 2-3s | ~535MB | ✅ Bundled offline | ✅ No downloads | **Recommended for production** |
+| **Fast** | `SHH_Image_Converter_v4_Fast.spec` | <1s | ~70MB | ❌ Not included | ✅ Basic features | Quick deployment, basic conversion |
+| Legacy Single-File | `SHH_Image_Converter_v4_SingleFile.spec` | 15-25s | ~360MB | ✅ Online download | ❌ Requires internet | Archive/compatibility only |
 
 ## 🚀 **Recommended: Complete Build**
 
 ### **Why Choose Complete Build?**
 - **Best Performance**: 2-3 second startup (fastest with full features)
 - **Complete Functionality**: All features including AI background removal
-- **Production Ready**: Optimal balance of speed, size, and functionality
-- **User Experience**: Professional startup with all capabilities
+- **Fresh PC Compatible**: Works immediately on clean Windows installations
+- **Offline AI**: No internet required - 175MB U²-Net model bundled
+- **Production Ready**: Optimal balance of reliability and functionality
+- **Zero Dependencies**: Works on any Windows 10/11 machine
 
 ### **Build Command**
 ```powershell
@@ -24,8 +26,9 @@ python -m PyInstaller .\SHH_Image_Converter_v4_Complete.spec
 ### **Distribution**
 - **Folder**: `dist\SHH_Image_Converter_v4_Complete\`
 - **Executable**: `SHH_Image_Converter_v4_Complete.exe`
-- **Size**: ~360MB (includes all AI libraries)
+- **Size**: ~535MB (includes bundled AI model + all libraries)
 - **Dependencies**: Zero - completely standalone
+- **AI Model**: Bundled u2net.onnx (175MB) in `_internal\models\u2net\`
 
 ## ⚡ **Alternative: Fast Build**
 

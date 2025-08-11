@@ -3,17 +3,20 @@
 ## 🚀 **Quick Start**
 
 ### **Download and Launch**
-1. Get the `SHH_Image_Converter_v4_Complete` folder (~360MB with AI) or `SHH_Image_Converter_v4_Fast` folder (~70MB without AI)
+1. Get the `SHH_Image_Converter_v4_Complete` folder (~535MB with bundled AI) or `SHH_Image_Converter_v4_Fast` folder (~70MB without AI)
 2. Run `SHH_Image_Converter_v4_Complete.exe` (launches in 2-3 seconds)
 3. Professional loading screen with minimal delay
 
-### **v4.1.1 Update**
+### **v4.1.1 Updates**
 - **Fixed**: Image upscaling now works correctly for small images
 - **Enhanced**: Preview and final output now match exactly
 - **Quality**: Improved scaling with high-quality LANCZOS resampling
+- **Fresh PC Fix**: AI background removal now works offline on fresh installations
+- **Model Bundling**: 175MB U²-Net model included - no downloads required
+- **Timeout Protection**: Prevents hanging during AI initialization
 
 ### **Choose Your Build**
-- **Complete Build**: Full AI functionality (~360MB, 2-3s startup)
+- **Complete Build**: Full offline AI functionality (~535MB, 2-3s startup)
 - **Fast Build**: Basic conversion only (~70MB, <1s startup)
 
 ### **Basic Image Conversion**
@@ -29,16 +32,18 @@
 3. Output automatically switches to PNG format and quality slider is disabled
 4. Preview shows AI results in real-time
 5. Convert processes images with transparent backgrounds (PNG)
-6. **Note**: AI functionality requires the Complete Build
+6. **Note**: Works offline - no internet connection required
+7. **Performance**: First use may take 2-5 seconds (model loading), subsequent uses are faster
 
 ## 📋 **System Requirements**
 - **OS**: Windows 10/11 (64-bit)
-- **RAM**: 4GB minimum, 8GB recommended for AI (Complete Build)
+- **RAM**: 2GB minimum, 4GB recommended for AI processing
 - **Storage**: 
-  - Complete Build: ~360MB
+  - Complete Build: ~535MB (bundled AI model included)
   - Fast Build: ~70MB
-  - AI Model Cache: ~176MB (downloaded on first AI use)
 - **Dependencies**: None (completely standalone)
+- **Internet**: Not required (AI model bundled offline)
+- **Fresh PC**: Works immediately on clean Windows installations
 
 ## 🔧 **Advanced Settings**
 

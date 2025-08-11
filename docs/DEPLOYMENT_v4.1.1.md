@@ -1,21 +1,28 @@
 # 🚀 SHH Image Converter v4.1.1 - Production Deployment
 
-## 📅 **Release Date: August 9, 2025**
+## 📅 **Release Date: August 11, 2025**
 
 ### 🎯 **Release Summary**
 - **Version**: v4.1.1
-- **Type**: Critical Bug Fix Release
+- **Type**: Critical Bug Fix + Fresh PC Compatibility Release
 - **Build**: Production-ready multi-file executable
-- **Size**: ~360MB (Complete with AI functionality)
+- **Size**: ~535MB (Complete with bundled AI model)
 - **Startup**: 2-3 seconds
+- **Fresh PC Ready**: Works immediately on clean Windows installations
 
-## 🐛 **Critical Bug Fix**
+## 🐛 **Critical Bug Fixes**
 
-### **Issue Resolved**
+### **Image Upscaling Fixed**
 - **Problem**: Image upscaling not working correctly
 - **Symptom**: Small images (e.g., 100x100) with large target dimensions (e.g., 800x600) resulted in small image centered on large background
 - **Root Cause**: `thumbnail()` method only shrinks images, never enlarges them
 - **Impact**: Preview showed correct result, but final output was incorrect
+
+### **Fresh PC AI Compatibility Fixed**
+- **Problem**: Background removal hung indefinitely on fresh PC installations
+- **Symptom**: "Converting..." status never completed when using AI background removal
+- **Root Cause**: U²-Net model (175MB) not bundled; attempted download blocked/failed
+- **Impact**: AI features unusable on fresh Windows installations without internet
 
 ### **Technical Fix**
 - **Replaced**: `img.thumbnail((width, height))`

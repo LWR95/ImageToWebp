@@ -9,39 +9,41 @@
 
 ## 🚀 **What's New in v4.1.1**
 
-### 🐛 **Critical Bug Fix**
+### 🐛 **Critical Bug Fixes**
 - **Image Upscaling Fixed**: Small images now properly scale up to target dimensions
 - **Preview Consistency**: Final output matches preview exactly for all image sizes
 - **Quality Enhancement**: LANCZOS resampling for smooth, high-quality scaling
-- **Aspect Ratio**: Maintains proper proportions during upscaling
+- **Fresh PC Compatibility**: AI background removal now works offline on fresh installations
+- **Timeout Protection**: Prevents indefinite hanging during AI initialization
+- **Model Bundling**: 175MB U²-Net model included - no internet required for AI features
 
-### ⚡ **Previous v4.1 Achievements**
-
-### ⚡ **Previous v4.1 Achievements**
+### ⚡ **AI & Performance**
 - **Lightning Fast Startup**: 2-3 seconds (down from 15-25s)
+- **Offline AI**: Background removal works without internet connectivity
 - **Multi-File Distribution**: Optimized deployment for instant loading
 - **Smart Build Options**: Choose between Complete (with AI) or Fast (without AI)
 - **Lazy AI Loading**: Background removal loads only when needed
 
 ### ✨ **AI Background Removal**
-- **Deep Learning Model**: U²-Net architecture (downloaded on first use, ~176MB cached)
+- **Deep Learning Model**: U²-Net architecture (bundled offline, no download required)
 - **One-Click Operation**: Simple checkbox to enable/disable AI processing
 - **Professional Quality**: Maintains transparency and edge detail
 - **Batch Processing**: Remove backgrounds from multiple images efficiently
-- **Memory Optimized**: Smart session management for large batches
+- **Memory Optimized**: Smart session management with timeout protection
+- **Fresh PC Ready**: Works immediately on clean Windows installations
 
 ### 🎨 **Enhanced User Experience**
 - **Optimized Loading Screen**: Minimal startup delay with professional appearance
 - **Modern UI**: Clean, intuitive interface with drag-and-drop support
-- **Real-time Preview**: See changes before conversion
-- **Status Updates**: Clear feedback during processing
+- **Real-time Preview**: See changes before conversion (including AI effects)
+- **Status Updates**: Clear feedback during processing with AI diagnostic info
 - **Settings Persistence**: Remembers preferences between sessions
 
 ### 📦 **Smart Distribution Options**
-- **Complete Build**: ~360MB with full AI functionality (2-3s startup)
+- **Complete Build**: ~535MB with full offline AI functionality (2-3s startup)
 - **Fast Build**: ~70MB without AI for rapid deployment
 - **Multi-File**: Optimized architecture for instant loading
-- **Professional Distribution**: Enterprise-ready deployment
+- **Zero Dependencies**: Works on fresh Windows 10/11 installations
 
 ## 🎯 **Core Features**
 
@@ -104,13 +106,16 @@ python -m PyInstaller .\SHH_Image_Converter_v4_Fast.spec
 
 ## 📊 **Performance & Technical Details**
 
-| Build Type | Startup Time | Size | AI Background Removal | Best For |
-|------------|-------------|------|---------------------|----------|
-| **Complete** | 2-3s | ~360MB | ✅ Full functionality | Production use |
-| **Fast** | <1s | ~70MB | ❌ Not included | Quick deployment |
-| Legacy Single-File | 15-25s | ~150MB | ✅ Included | Archive only |
+| Build Type | Startup Time | Size | AI Background Removal | Fresh PC Ready | Best For |
+|------------|-------------|------|---------------------|----------------|----------|
+| **Complete** | 2-3s | ~535MB | ✅ Bundled offline | ✅ No downloads | Production use |
+| **Fast** | <1s | ~70MB | ❌ Not included | ✅ Basic features | Quick deployment |
+| Legacy Single-File | 15-25s | ~360MB | ✅ Online download | ❌ Requires internet | Archive only |
 
-- **AI Warmup**: 2–3s on first AI use (model loading)
+- **AI Model**: 175MB U²-Net bundled (no download required)
+- **AI Warmup**: 2–3s on first AI use (model loading from bundled cache)
+- **Fresh PC**: Works immediately - no dependencies or downloads
+- **Timeout Protection**: AI operations limited to prevent hanging
 - **Memory Usage**: ~1.5GB during AI processing
 - **Safety**: Numeric fields are validated; empty/invalid width/height fall back to defaults
 - **Threading**: UI remains responsive during conversion
@@ -133,12 +138,25 @@ ImageToWebp/
 │       ├── gui.instructions.md
 │       ├── docs.instructions.md
 │       └── deps.instructions.md
-├── docs/                   # User and technical docs
+├── docs/                   # Complete documentation (see docs/README.md)
+│   ├── USER_GUIDE.md      # Complete user manual
+│   ├── BUILD_GUIDE.md     # Build and deployment instructions
+│   ├── TECHNICAL_GUIDE.md # Implementation details
+│   ├── DEPLOYMENT_v4.1.1.md # Production deployment
+│   └── BACKGROUND_REMOVAL_FIX.md # Fresh PC AI fix details
 └── README.md
 ```
 
+## 📚 **Documentation**
+
+- **[Complete Documentation](docs/README.md)** - Full documentation index
+- **[User Guide](docs/USER_GUIDE.md)** - End user instructions
+- **[Build Guide](docs/BUILD_GUIDE.md)** - Developer build instructions
+- **[Technical Guide](docs/TECHNICAL_GUIDE.md)** - Implementation details
+
 ## 📈 **Version History**
 
+- **v4.1.1**: Critical fixes (upscaling, fresh PC AI compatibility, model bundling)
 - **v4.1**: Performance optimization (2-3s startup), multi-file builds, lazy AI loading
 - **v4.0**: AI background removal + loading screen + single-file EXE
 - Earlier versions: batch processing, themes, preview, basic conversion

@@ -6,45 +6,172 @@ from PIL import Image, ImageTk
 import threading
 import os
 import json
+import time
+import traceback
+import sys
+from typing import Optional
 
 class AIManager:
+    """Manages AI background removal with timeouts & diagnostics to avoid indefinite hangs."""
+    SESSION_TIMEOUT_SEC = 40  # Max time allowed for initial model/session creation
+    REMOVAL_TIMEOUT_SEC = 25  # Per-image background removal timeout
+
     def __init__(self):
         self._rembg = None
         self._session = None
         self._session_lock = threading.Lock()
-    
-    def get_session(self):
-        """Get or create background removal session (thread-safe)"""
-        with self._session_lock:
-            if self._session is None:
-                # Load rembg library if not already loaded
-                if self._rembg is None:
-                    try:
-                        import rembg
-                        self._rembg = rembg
-                    except ImportError as e:
-                        print(f"AI libraries not available: {e}")
-                        return None
+        self._init_attempted = False
+        self._init_failed = False
+        self._last_error: Optional[str] = None
+
+    def _log(self, msg: str):
+        print(f"[AI] {time.strftime('%H:%M:%S')} {msg}")
+
+    def _load_library(self) -> bool:
+        if self._rembg is not None:
+            return True
+        try:
+            import rembg  # type: ignore
+            self._rembg = rembg
+            self._log("rembg imported successfully")
+            return True
+        except ImportError as e:
+            self._last_error = f"ImportError: {e}"
+            self._log(f"Failed to import rembg: {e}")
+        except Exception as e:  # Unexpected
+            self._last_error = f"Unexpected import error: {e}"
+            self._log(f"Unexpected error importing rembg: {e}\n{traceback.format_exc()}")
+        return False
+
+    def _ensure_model_cache(self):
+        """Ensure the U2-Net model is available in cache; copy from bundled if needed."""
+        # Standard cache locations (no need for appdirs dependency)
+        cache_locations = [
+            os.path.expanduser("~/.u2net"),
+            os.path.expanduser("~/.cache/rembg"),
+            os.path.join(os.environ.get("LOCALAPPDATA", ""), "rembg"),
+        ]
+        
+        model_filename = "u2net.onnx"
+        
+        # Check if model already exists in any cache location
+        for cache_dir in cache_locations:
+            cache_file = os.path.join(cache_dir, model_filename)
+            if os.path.exists(cache_file) and os.path.getsize(cache_file) > 100_000_000:  # ~175MB expected
+                self._log(f"Found existing model at {cache_file}")
+                return True
+        
+        # Model not found, try to copy from bundled location
+        bundled_model = None
+        possible_bundled_paths = [
+            os.path.join(os.path.dirname(__file__), "models", "u2net", model_filename),  # Source layout
+            os.path.join(os.path.dirname(os.path.abspath(sys.executable)), "models", "u2net", model_filename),  # Bundled EXE
+            os.path.join(os.getcwd(), "models", "u2net", model_filename),  # Current dir
+        ]
+        
+        for path in possible_bundled_paths:
+            if os.path.exists(path):
+                bundled_model = path
+                self._log(f"Found bundled model at {bundled_model}")
+                break
+        
+        if not bundled_model:
+            self._log("No bundled model found; will attempt online download")
+            return False
+        
+        # Try to copy bundled model to first cache location
+        target_cache = cache_locations[0]  # ~/.u2net
+        try:
+            os.makedirs(target_cache, exist_ok=True)
+            target_file = os.path.join(target_cache, model_filename)
+            
+            import shutil
+            self._log(f"Copying bundled model to {target_file}")
+            shutil.copy2(bundled_model, target_file)
+            
+            if os.path.exists(target_file) and os.path.getsize(target_file) > 100_000_000:
+                self._log("Model copied successfully")
+                return True
+            else:
+                self._log("Model copy failed or incomplete")
+                return False
                 
-                # Create session if library loaded successfully
-                if self._rembg is not None:
-                    try:
-                        self._session = self._rembg.new_session('u2net')
-                    except Exception as e:
-                        print(f"Failed to create AI session: {e}")
-                        return None
+        except Exception as e:
+            self._log(f"Failed to copy bundled model: {e}")
+            return False
+
+    def _init_session_blocking(self):
+        """Direct (blocking) session init; run inside a worker thread so we can time out."""
+        try:
+            if self._rembg is None and not self._load_library():
+                return
+            if self._rembg is not None:
+                # Ensure model is available before creating session
+                self._ensure_model_cache()
+                self._log("Creating new rembg session (model 'u2net') ...")
+                self._session = self._rembg.new_session('u2net')  # May download model
+                self._log("Session created successfully")
+        except Exception as e:
+            self._last_error = f"Session init failed: {e}"
+            self._log(f"Session creation failed: {e}\n{traceback.format_exc()}")
+
+    def get_session(self):
+        """Get or lazily create session with a timeout to prevent indefinite stall."""
+        with self._session_lock:
+            if self._session is not None:
+                return self._session
+            if self._init_attempted and self._init_failed:
+                return None
+            self._init_attempted = True
+
+            worker = threading.Thread(target=self._init_session_blocking, daemon=True)
+            start = time.time()
+            worker.start()
+            worker.join(self.SESSION_TIMEOUT_SEC)
+            if worker.is_alive():
+                self._init_failed = True
+                self._last_error = ("Session initialization timed out after "
+                                    f"{self.SESSION_TIMEOUT_SEC}s (likely model download/network issue)")
+                self._log(self._last_error)
+                return None
+            if self._session is None:
+                # Failed inside worker
+                self._init_failed = True
+                if not self._last_error:
+                    self._last_error = "Unknown failure creating AI session"
+                return None
+            duration = time.time() - start
+            self._log(f"AI session ready in {duration:.1f}s")
             return self._session
-    
-    def remove_background(self, image_bytes):
-        """Remove background from image with error handling"""
+
+    def remove_background(self, image_bytes: bytes):
+        """Remove background with a per-image timeout; returns bytes or None."""
         session = self.get_session()
         if session is None:
             return None
-        try:
-            return self._rembg.remove(image_bytes, session=session)
-        except Exception as e:
-            print(f"Background removal failed: {e}")
+        result_container: dict[str, Optional[bytes]] = {"data": None}
+        error_container: dict[str, Optional[str]] = {"err": None}
+
+        def _work():
+            try:
+                result_container["data"] = self._rembg.remove(image_bytes, session=session)  # type: ignore
+            except Exception as e:
+                error_container["err"] = str(e)
+                self._log(f"Background removal exception: {e}\n{traceback.format_exc()}")
+
+        t = threading.Thread(target=_work, daemon=True)
+        t.start()
+        t.join(self.REMOVAL_TIMEOUT_SEC)
+        if t.is_alive():
+            self._log(f"Per-image removal timed out after {self.REMOVAL_TIMEOUT_SEC}s; skipping AI for this image")
             return None
+        if error_container["err"]:
+            return None
+        return result_container["data"]
+
+    @property
+    def last_error(self) -> Optional[str]:
+        return self._last_error
 
 class ImageConverterApp:
     def __init__(self, root):
@@ -465,26 +592,26 @@ class ImageConverterApp:
                         try:
                             session = self.get_bg_removal_session()
                             if session is not None:
-                                # Convert to bytes for rembg processing
                                 from io import BytesIO
                                 img_bytes = BytesIO()
                                 img.save(img_bytes, format='PNG')
                                 img_bytes.seek(0)
-                                
-                                # Remove background
+
+                                # Timed background removal (won't hang indefinitely)
                                 bg_removed_bytes = self.ai_manager.remove_background(img_bytes.getvalue())
                                 if bg_removed_bytes is not None:
                                     bg_removed_img = Image.open(BytesIO(bg_removed_bytes))
                                     img = bg_removed_img
-                                    
-                                    # Force PNG format when background is removed
-                                    output_format = "PNG"
+                                    output_format = "PNG"  # Force PNG when AI used
                                 else:
-                                    print(f"Warning: Background removal failed for {filename}, continuing without AI")
+                                    if self.ai_manager.last_error:
+                                        print(f"Warning: AI skip for {filename}: {self.ai_manager.last_error}")
+                                    else:
+                                        print(f"Warning: Background removal failed or timed out for {filename}")
                             else:
-                                print(f"Warning: Background removal session not available for {filename}")
+                                print(f"Warning: Background removal session not available for {filename} (init failed or timed out)")
                         except Exception as e:
-                            print(f"Background removal failed for {filename}: {e}")
+                            print(f"Background removal failed for {filename}: {e}\n{traceback.format_exc()}")
 
                     # Handle transparency
                     # Skip transparency flattening if background removal is enabled (preserve transparency)
@@ -542,7 +669,11 @@ class ImageConverterApp:
                     continue
             
             self.status_var.set(f"Conversion complete! Converted: {converted_count}, Skipped: {skipped_count}")
-            messagebox.showinfo("Success", f"Conversion complete!\n\nSuccessfully converted: {converted_count}\nSkipped: {skipped_count}")
+            # Provide final note if AI never initialized
+            ai_note = ""
+            if self.remove_background.get() and self.ai_manager.last_error:
+                ai_note = f"\n\n(Background removal disabled: {self.ai_manager.last_error})"
+            messagebox.showinfo("Success", f"Conversion complete!\n\nSuccessfully converted: {converted_count}\nSkipped: {skipped_count}{ai_note}")
 
         except Exception as e:
             self.status_var.set("Error!")
